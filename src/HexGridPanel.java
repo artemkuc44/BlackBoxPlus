@@ -1,5 +1,4 @@
 package src;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -231,20 +230,6 @@ public class HexGridPanel extends JPanel {
         }
     }
 
-
-
-    private ArrayList<Point> calculateNeighbors(Point hex) {
-        ArrayList<Point> neighbors = new ArrayList<>();
-        for (Point dir : DIRECTIONS) {
-            int neighborQ = hex.x + dir.x;
-            int neighborR = hex.y + dir.y;
-            Point newPoint = new Point(neighborQ,neighborR);
-            if(containsElement(hexCoordinates,newPoint)){//checks if inside hex
-                neighbors.add(newPoint);
-            }
-        }
-        return neighbors;
-    }
 
 
     private void updateNeighbors() {
