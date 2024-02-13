@@ -15,11 +15,13 @@ public class HexGridPanel extends JPanel {
     private static final int HEX_SIZE = 40;
     private static final int DIAMETER_HEXAGONS = 9;
 
-    private ArrayList<Point> markedHexagons = new ArrayList<>();
-    private HashMap<Point, ArrayList<Point>> hexagonInfluences = new HashMap<>();
+    private ArrayList<Atom> atoms = new ArrayList<>();
 
 
-    private Point[][] hexCoordinates;
+
+
+
+    private Point[][] hexCoordinates;//all hexagon coords
 
     private static final Point[] DIRECTIONS = new Point[] {
             new Point(0, 1), new Point(0, -1), new Point(-1, 0),
@@ -34,7 +36,7 @@ public class HexGridPanel extends JPanel {
         hexCoordinates = new Point[DIAMETER_HEXAGONS][DIAMETER_HEXAGONS];
 
 
-        // Populate the hexCoordinates array with hexagon coordinates
+        // Populate the hexCoordinates array with all outer hexagon coordinates
         for (int q = -DIAMETER_HEXAGONS / 2; q <= DIAMETER_HEXAGONS / 2; q++) {
             //max/min needed to draw lines of hexagons (different lengths), as q becomes "more positive" the
             int r1 = Math.max(-DIAMETER_HEXAGONS / 2, -q - DIAMETER_HEXAGONS / 2);
@@ -43,7 +45,7 @@ public class HexGridPanel extends JPanel {
                 int x = q;
                 int y = r;
                 hexCoordinates[q + DIAMETER_HEXAGONS / 2][r + DIAMETER_HEXAGONS / 2] = new Point(x, y);
-                System.out.println(x + " " +  y);
+                //System.out.println(x + " " +  y);
             }
         }
 
@@ -53,25 +55,24 @@ public class HexGridPanel extends JPanel {
                 super.mouseClicked(e);
                 Point clickedPoint = e.getPoint();
                 // Convert click coordinates to hex grid coordinates
-                Point hexCoords = pixelToHex(clickedPoint.x, clickedPoint.y);
-                // Toggle the hexagon as having a circle
-                if (hexCoords != null) {
-                    System.out.println("Hexagon Clicked: " + hexCoords); // Print to console
-
-                    // If the hexagon is already marked, remove otherwise add.
-                    if (markedHexagons.contains(hexCoords)) {
-                        markedHexagons.remove(hexCoords);
-                        hexagonInfluences.remove(hexCoords);
-
+                Point hexCoord = pixelToHex(clickedPoint.x, clickedPoint.y);
+                if (hexCoord != null) {
+                    Atom existingAtom = findAtomByPoint(hexCoord);
+                    if (existingAtom != null) {
+                        // Atom exists, so remove it
+                        atoms.remove(existingAtom);
                     } else {
-                        markedHexagons.add(hexCoords);
-                        hexagonInfluences.put(hexCoords,calculateNeighbors(hexCoords));
-
+                        // Atom doesn't exist, create and add a new one
+                        Atom newAtom = new Atom(hexCoord);
+                        atoms.add(newAtom);
+                        updateNeighbors(); // Make sure to update neighbors for all atoms
+                        System.out.println(newAtom.toString());
                     }
-                    printHexagonInfluences();
-                    repaint(); //repaint after every mouseclick
+                    repaint(); // Repaint after every mouse click
                 }
             }
+
+
 
         });
     }
@@ -138,14 +139,17 @@ public class HexGridPanel extends JPanel {
         FontMetrics metrics = g.getFontMetrics(); // Get font metrics to adjust text positioning
 
         // Highlight influenced hexagons
-        for (ArrayList<Point> influences : hexagonInfluences.values()) {
-            for (Point influence : influences) {
-                int x = centerX + (int) (HEX_SIZE * 3/2 * influence.x);
-                int y = centerY + (int) (HEX_SIZE * Math.sqrt(3) * (influence.y + influence.x / 2.0));
+        for (Atom atom : atoms) {
+            for(Point neighbours:atom.getNeighbors()){
+                int x = centerX + (int) (HEX_SIZE * 3/2 * neighbours.x);
+                int y = centerY + (int) (HEX_SIZE * Math.sqrt(3) * (neighbours.y + neighbours.x / 2.0));
                 g2d.setColor(new Color(255, 0, 0, 75)); // Semi-transparent red for highlight
                 g2d.fill(createHexagon(x, y, HEX_SIZE));
                 g2d.setColor(Color.BLACK); // Reset color for drawing outlines
             }
+
+
+
         }
 
 
@@ -182,12 +186,13 @@ public class HexGridPanel extends JPanel {
             }
         }
 
-        for (Point hex : markedHexagons) {
+        for (Atom atom : atoms) {
+            Point hex = atom.getPosition();
             int x = centerX + (int) (HEX_SIZE * 3/2 * hex.x);
             int y = centerY + (int) (HEX_SIZE * Math.sqrt(3) * (hex.y + hex.x / 2.0));
             g2d.fillOval(x - HEX_SIZE / 2, y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
+            // Additional rendering based on Atom properties
         }
-
         // Undo the rotation for any other painting
         g2d.rotate(-Math.toRadians(45), centerX, centerY);
     }
@@ -226,17 +231,6 @@ public class HexGridPanel extends JPanel {
         }
     }
 
-    private void printHexagonInfluences() {
-        for (HashMap.Entry<Point, ArrayList<Point>> entry : hexagonInfluences.entrySet()) {
-            Point hexagon = entry.getKey();
-            ArrayList<Point> influences = entry.getValue();
-            System.out.print("Hexagon at (" + hexagon.x + ", " + hexagon.y + ") influences: ");
-            for (Point influence : influences) {
-                System.out.print("(" + influence.x + ", " + influence.y + ") ");
-            }
-            System.out.println(); // Move to the next line after printing all influences for a hexagon
-        }
-    }
 
 
     private ArrayList<Point> calculateNeighbors(Point hex) {
@@ -244,10 +238,42 @@ public class HexGridPanel extends JPanel {
         for (Point dir : DIRECTIONS) {
             int neighborQ = hex.x + dir.x;
             int neighborR = hex.y + dir.y;
-            neighbors.add(new Point(neighborQ, neighborR));
+            Point newPoint = new Point(neighborQ,neighborR);
+            if(containsElement(hexCoordinates,newPoint)){//checks if inside hex
+                neighbors.add(newPoint);
+            }
         }
         return neighbors;
     }
+
+
+    private void updateNeighbors() {
+//        // Clear existing neighbors
+//        for (Atom atom : atoms) {
+//            atom.getNeighbors().clear();
+//        }
+        // Recalculate neighbors
+        for (Atom atom : atoms) {
+            for (Point dir : DIRECTIONS) {
+                Point neighborPoint = new Point(atom.getPosition().x + dir.x, atom.getPosition().y + dir.y);
+                if(containsElement(hexCoordinates,neighborPoint)){
+                    atom.addNeighbor(neighborPoint);
+                }
+            }
+        }
+    }
+
+
+
+    private Atom findAtomByPoint(Point point) {
+        for (Atom atom : atoms) {
+            if (atom.getPosition().equals(point)) {
+                return atom;
+            }
+        }
+        return null; // No atom found at the given point
+    }
+
 
 
 
