@@ -15,7 +15,7 @@ public class HexGridPanel extends JPanel {
     private static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
 
     private ArrayList<Atom> atoms = new ArrayList<>();//array List of atoms placed
-
+    private int numAtoms = 0;
     private Point[][] hexCoordinates;//All internal hexagon coords
 
     private static final Point[] DIRECTIONS = new Point[] {//Directions array used to compute circular dependency
@@ -50,14 +50,18 @@ public class HexGridPanel extends JPanel {
                 if (hexCoord != null) {
                     Atom existingAtom = findAtomByPoint(hexCoord);
                     if (existingAtom != null) {
+                        numAtoms = numAtoms - 1;
                         // Atom exists, so remove it
                         atoms.remove(existingAtom);
                     } else {
-                        // Atom doesn't exist, create and add a new one
-                        Atom newAtom = new Atom(hexCoord);
-                        atoms.add(newAtom);
-                        updateNeighbors(); // Make sure to update neighbors for all atoms
-                        System.out.println(newAtom.toString());
+                        if(numAtoms != 6) {
+                            numAtoms = numAtoms + 1;
+                            // Atom doesn't exist, create and add a new one
+                            Atom newAtom = new Atom(hexCoord);
+                            atoms.add(newAtom);
+                            updateNeighbors(); // Make sure to update neighbors for all atoms
+                            System.out.println(newAtom.toString());
+                        }
                     }
                     repaint(); // Repaint after every mouse click
                 }
