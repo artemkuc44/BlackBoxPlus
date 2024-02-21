@@ -14,8 +14,8 @@ public class HexGridPanel extends JPanel {
     private static final int HEX_SIZE = 40;//size of each internal hexagon
     private static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
 
+    private static final int MAX_ATOMS = 6;//max number of atoms
     private ArrayList<Atom> atoms = new ArrayList<>();//array List of atoms placed
-    private int numAtoms = 0;
     private Point[][] hexCoordinates;//All internal hexagon coords
 
     private static final Point[] DIRECTIONS = new Point[] {//Directions array used to compute circular dependency
@@ -29,16 +29,17 @@ public class HexGridPanel extends JPanel {
         //initialize array to store all internal hex coordinates
         hexCoordinates = new Point[DIAMETER_HEXAGONS][DIAMETER_HEXAGONS];
 
-        //Populate the hexCoordinates array
-        for (int q = -DIAMETER_HEXAGONS / 2; q <= DIAMETER_HEXAGONS / 2; q++) {
-            int r1 = Math.max(-DIAMETER_HEXAGONS / 2, -q - DIAMETER_HEXAGONS / 2);
-            int r2 = Math.min(DIAMETER_HEXAGONS / 2, -q + DIAMETER_HEXAGONS / 2);
-            for (int r = r1; r <= r2; r++) {
-                int x = q;
-                int y = r;
-                hexCoordinates[q + DIAMETER_HEXAGONS / 2][r + DIAMETER_HEXAGONS / 2] = new Point(x, y);
+        int radius = DIAMETER_HEXAGONS / 2;
+
+        //populate hex array from (-4,-4) to (4,4)
+        for (int col = -radius; col <= radius; col++) {
+            int startRow = Math.max(-radius, -col - radius);
+            int endRow = Math.min(radius, -col + radius);
+            for (int row = startRow; row <= endRow; row++) {
+                hexCoordinates[col + radius][row + radius] = new Point(col, row);
             }
         }
+
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -50,12 +51,10 @@ public class HexGridPanel extends JPanel {
                 if (hexCoord != null) {
                     Atom existingAtom = findAtomByPoint(hexCoord);
                     if (existingAtom != null) {
-                        numAtoms = numAtoms - 1;
                         // Atom exists, so remove it
                         atoms.remove(existingAtom);
                     } else {
-                        if(numAtoms != 6) {
-                            numAtoms = numAtoms + 1;
+                        if(atoms.size() != MAX_ATOMS) {
                             // Atom doesn't exist, create and add a new one
                             Atom newAtom = new Atom(hexCoord);
                             atoms.add(newAtom);
@@ -90,7 +89,6 @@ public class HexGridPanel extends JPanel {
         AffineTransform.getRotateInstance(-Math.toRadians(90), 0, 0)
                 .transform(point, point);
 
-
         x = (int) point.x;
         y = (int) point.y;
         // Convert pixel coordinates to axial coordinates
@@ -115,8 +113,8 @@ public class HexGridPanel extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);//ANTIALIAS_ON, makes edges smoother
 
         // Calculate the center of the panel to rotate around
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
+        int centerX = this.getWidth() / 2;
+        int centerY = this.getHeight() / 2;
 
 
         // Apply rotation to the graphics object
@@ -124,30 +122,30 @@ public class HexGridPanel extends JPanel {
         g2d.rotate(Math.toRadians(90), centerX, centerY);
 
         // Calculate the radius (in hexagons)
-        int radius = DIAMETER_HEXAGONS / 2;//9/2 == 4(int)
+        int radius = DIAMETER_HEXAGONS / 2;//9/2 == 4 (int)
 
         FontMetrics metrics = g.getFontMetrics(); // Get font metrics to adjust text positioning
 
-        // Highlight influenced hexagons
+        // Highlight neighbouring hexagons
         for (Atom atom : atoms) {
             for(Point neighbours:atom.getNeighbors()){
                 int x = centerX + (int) (HEX_SIZE * 3/2 * neighbours.x);
                 int y = centerY + (int) (HEX_SIZE * Math.sqrt(3) * (neighbours.y + neighbours.x / 2.0));
-                g2d.setColor(new Color(255, 0, 0, 75)); // Semi-transparent red for highlight
+                g2d.setColor(new Color(255, 0, 0, 75)); // Semi-transparent for highlight
                 g2d.fill(createHexagon(x, y, HEX_SIZE));
-                g2d.setColor(Color.BLACK); // Reset color for drawing outlines
+                g2d.setColor(Color.BLACK); // Reset colour
             }
 
         }
 
         // Draw the hexagons
-        for (int q = -radius; q <= radius; q++) {
-            int r1 = Math.max(-radius, -q - radius);
-            int r2 = Math.min(radius, -q + radius);
-            for (int r = r1; r <= r2; r++) {
-                int x = centerX + (int) (HEX_SIZE * 3/2 * q);
+        for (int col = -radius; col <= radius; col++) {
+            int startRow = Math.max(-radius, -col - radius);
+            int endRow = Math.min(radius, -col + radius);
+            for (int row = startRow; row <= endRow; row++) {
+                int x = centerX + (int) (HEX_SIZE * 3/2 * col);
 
-                int y = centerY + (int) (HEX_SIZE * Math.sqrt(3) * (r + q / 2.0));
+                int y = centerY + (int) (HEX_SIZE * Math.sqrt(3) * (row + col / 2.0));
 
                 // Draw individual hexagon
                 Path2D hexagon = createHexagon(x, y, HEX_SIZE);
@@ -158,12 +156,12 @@ public class HexGridPanel extends JPanel {
 
                 // Create an AffineTransform for rotating the text
                 AffineTransform transform = new AffineTransform();
-                transform.rotate(Math.PI / -2, x, y); // Rotate 90 degrees around the text's drawing point
+                transform.rotate(Math.toRadians(-90), x, y); // Rotate 90 degrees around the text's drawing point
                 // Apply the transform, draw the text, then reset
                 AffineTransform originalTransform = g2d.getTransform();
                 g2d.transform(transform);
 
-                String coordText = q + "," + r;
+                String coordText = col + "," + row;
                 int textWidth = metrics.stringWidth(coordText);
                 // Adjust drawing position for rotated text
                 g2d.drawString(coordText, x - (metrics.getAscent() / 2), y + (textWidth / 2));
@@ -171,13 +169,14 @@ public class HexGridPanel extends JPanel {
                 g2d.setTransform(originalTransform); // Reset to original transform
             }
         }
-
+//
         for (Atom atom : atoms) {
+
             Point hex = atom.getPosition();
             int x = centerX + (int) (HEX_SIZE * 3/2 * hex.x);
             int y = centerY + (int) (HEX_SIZE * Math.sqrt(3) * (hex.y + hex.x / 2.0));
             g2d.fillOval(x - HEX_SIZE / 2, y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
-            // Additional rendering based on Atom properties
+
         }
         // Undo the rotation for any other painting
         g2d.rotate(-Math.toRadians(45), centerX, centerY);
@@ -202,13 +201,13 @@ public class HexGridPanel extends JPanel {
     private void printHexagonCoordinates() {
         int count = 0;
         int radius = DIAMETER_HEXAGONS / 2;
-        for (int q = -radius; q <= radius; q++) {
-            int r1 = Math.max(-radius, -q - radius);
-            int r2 = Math.min(radius, -q + radius);
-            for (int r = r1; r <= r2; r++) {
-                Point coordinates = hexCoordinates[q + radius][r + radius];
+        for (int col = -radius; col <= radius; col++) {
+            int endRow = Math.max(-radius, -col - radius);
+            int startRow = Math.min(radius, -col + radius);
+            for (int r = endRow; r <= startRow; r++) {
+                Point coordinates = hexCoordinates[col + radius][r + radius];
                 if (coordinates == null) {
-                    System.out.println(++count + " Hexagon at (" + q + ", " + r + ") - Not initialized");
+                    System.out.println(++count + " Hexagon at (" + col + ", " + r + ") - Not initialized");
 
                 } else {
                     System.out.println(++count + " Hexagon at (" + coordinates.x + ", " + coordinates.y + ")");
