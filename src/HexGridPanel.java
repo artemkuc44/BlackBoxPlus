@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 
 public class HexGridPanel extends JPanel {
-    private static final int HEX_SIZE = 40;//size of each internal hexagon
+    private static final int HEX_SIZE = 40;//also known as the radius ie. 40 pixels from center to any given corner
     private static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
 
     private static final int MAX_ATOMS = 6;//max number of atoms
@@ -68,6 +68,17 @@ public class HexGridPanel extends JPanel {
         });
     }
 
+    public Point[][] getHexCoordinates(){
+        return hexCoordinates;
+    }
+
+    public ArrayList<Atom> getAtoms(){
+        return atoms;
+    }
+
+    public void addAtom(Atom atom){
+        atoms.add(atom);
+    }
 
     public static boolean containsElement(Point[][] array, Point element) {
         for (Point[] row : array) {
@@ -79,26 +90,49 @@ public class HexGridPanel extends JPanel {
     }
 
     // Convert pixel coordinates to axial hex coordinates
-    private Point pixelToHex(int x, int y) {
+    public Point pixelToHex(int x, int y) {
+        System.out.println("x clicked = " + x + "\n" + "y clicked = " + y);
+        System.out.println("ckicked translated: x = " + y + " y clicked translated = " + -x );
+
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
+        System.out.println("width,height =" + getWidth() + "," + getHeight());
+
+        //translation applied along center
         x -= centerX;
         y -= centerY;
-        // Apply the reverse rotation to the click coordinates
-        Point2D.Float point = new Point2D.Float(x, y);
-        AffineTransform.getRotateInstance(-Math.toRadians(90), 0, 0)
-                .transform(point, point);
+        System.out.println("x translated = " + x + "\n" + "y translated = " + y);
 
+//        Point2D.Float point = new Point2D.Float(x, y);//supposed to be better than using Point point;
+//        AffineTransform.getRotateInstance(-Math.toRadians(90), 0, 0)
+//                .transform(point, point);
+//
+//        x = (int) point.x;
+//        y = (int) point.y;
+
+
+
+        //apply rotation without fancy code^ => simplified version of the rotational matrix
+        Point2D.Float point = new Point2D.Float(y, -x);//x rotates to y , y rotates to -x;
         x = (int) point.x;
         y = (int) point.y;
-        // Convert pixel coordinates to axial coordinates
+
+        System.out.println("x rotated = " + x + "\n" + "y rotated = " + y);
+
+
+        //Convert pixel coordinates to axial coordinates
         double q = (x * 2/3.0) / HEX_SIZE;
         double r = ((-x / 3.0) + (Math.sqrt(3)/3) * y) / HEX_SIZE;
 
+        System.out.println("q converted = " + q + "\n" + "r converted = " + r);
+
+
         int roundedQ = (int) Math.round(q);
         int roundedR = (int) Math.round(r);
-        // Check if the coordinates are valid within the hex grid
-        //Math.abs(roundedQ) <= DIAMETER_HEXAGONS / 2 && Math.abs(roundedR) <= DIAMETER_HEXAGONS / 2
+
+        //System.out.println("rounded q click = " + roundedQ + "\n" + "rounded r click = " + roundedR);
+
+        // Check if the coordinates are valid (within the external hex)
         Point checkPoint = new Point(roundedQ,roundedR);
         if (containsElement(hexCoordinates,checkPoint)) {
             return checkPoint;
@@ -152,6 +186,7 @@ public class HexGridPanel extends JPanel {
                 g2d.draw(hexagon);
 
 
+
                 //print coordinates
 
                 // Create an AffineTransform for rotating the text
@@ -169,7 +204,7 @@ public class HexGridPanel extends JPanel {
                 g2d.setTransform(originalTransform); // Reset to original transform
             }
         }
-//
+
         for (Atom atom : atoms) {
 
             Point hex = atom.getPosition();
@@ -178,8 +213,39 @@ public class HexGridPanel extends JPanel {
             g2d.fillOval(x - HEX_SIZE / 2, y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
 
         }
+
+
+
+        printBGGrid(g2d);
+
+
         // Undo the rotation for any other painting
         g2d.rotate(-Math.toRadians(45), centerX, centerY);
+    }
+
+    public void printBGGrid(Graphics2D g2d){
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+
+        // Calculate the number of grid cells that fit into the width and height
+        int gridSize = HEX_SIZE; // Use HEX_SIZE or another value for grid cell size
+        int numCols = panelWidth / gridSize;
+        int numRows = panelHeight / gridSize;
+
+        // Calculate the starting point (x,y) so the grid is centered
+        int startX = (panelWidth - (numCols * gridSize)) / 2;
+        int startY = (panelHeight - (numRows * gridSize)) / 2;
+
+        // Draw the grid
+        g2d.setColor(Color.LIGHT_GRAY); // Set grid color
+        for (int i = 0; i <= numCols; i++) {
+            int x = startX + i * gridSize;
+            g2d.drawLine(x, startY, x, startY + numRows * gridSize);
+        }
+        for (int i = 0; i <= numRows; i++) {
+            int y = startY + i * gridSize;
+            g2d.drawLine(startX, y, startX + numCols * gridSize, y);
+        }
     }
 
 
@@ -218,11 +284,11 @@ public class HexGridPanel extends JPanel {
 
 
 
-    private void updateNeighbors() {
-//        // Clear existing neighbors
-//        for (Atom atom : atoms) {
-//            atom.getNeighbors().clear();
-//        }
+    public void updateNeighbors() {
+        // Clear existing neighbors
+        for (Atom atom : atoms) {
+            atom.getNeighbors().clear();
+        }
         // Recalculate neighbors
         for (Atom atom : atoms) {
             for (Point dir : DIRECTIONS) {
@@ -236,7 +302,7 @@ public class HexGridPanel extends JPanel {
 
 
 
-    private Atom findAtomByPoint(Point point) {
+    public Atom findAtomByPoint(Point point) {
         for (Atom atom : atoms) {
             if (atom.getPosition().equals(point)) {
                 return atom;
@@ -251,7 +317,7 @@ public class HexGridPanel extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 800);
+        frame.setSize(814, 837);//for grid on my laptop - arty
         HexGridPanel hex = new HexGridPanel();
         frame.add(hex);
         frame.setVisible(true);
@@ -259,4 +325,6 @@ public class HexGridPanel extends JPanel {
 
         hex.printHexagonCoordinates();
     }
+
+
 }
