@@ -8,7 +8,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class HexGridPanel extends JPanel {
     private static final int HEX_SIZE = 40;
@@ -87,7 +86,7 @@ public class HexGridPanel extends JPanel {
     }
 
     // Convert pixel coordinates to axial hex coordinates
-    private Point pixelToHex(int x, int y) {
+    Point pixelToHex(int x, int y) {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
         x -= centerX;
@@ -250,7 +249,7 @@ public class HexGridPanel extends JPanel {
 
 
 
-    private Atom findAtomByPoint(Point point) {
+    Atom findAtomByPoint(Point point) {
         for (Atom atom : atoms) {
             if (atom.getPosition().equals(point)) {
                 return atom;
@@ -272,5 +271,9 @@ public class HexGridPanel extends JPanel {
 
 
         hex.printHexagonCoordinates();
+    }
+
+    public Point[][] getHexCoordinates() {
+        return hexCoordinates;
     }
 }

@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="HexGridPanel" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="src.HexGridPanel" />
+    <module name="Software Engineering Project 2" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="src.*" />

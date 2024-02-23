@@ -2,10 +2,9 @@ package src;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.awt.*;
 import java.awt.event.MouseEvent;
-
-
-import java.awt.Point;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
