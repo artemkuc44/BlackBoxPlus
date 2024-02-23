@@ -218,11 +218,11 @@ public class CleanHexGridPanel extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(814, 837);//for grid on my laptop - arty
-        HexGridPanel hex = new HexGridPanel();
+        frame.setSize(800, 800);
+        CleanHexGridPanel hex = new CleanHexGridPanel();
         frame.add(hex);
 
-        JLabel titleLabel = new JLabel("HOWS THIS MFS");
+        JLabel titleLabel = new JLabel("  BLACK BOX +");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         Font titleFont = titleLabel.getFont();
         titleLabel.setFont(titleFont.deriveFont(Font.BOLD, 50f));
