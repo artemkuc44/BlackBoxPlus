@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class CleanHexGridPanel extends JPanel {
+public class HexGridPanel extends JPanel {
     private static final int HEX_SIZE = 40;//also known as the radius ie. 40 pixels from center to any given corner
     private static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
 
@@ -25,7 +25,7 @@ public class CleanHexGridPanel extends JPanel {
 
 
 
-    public CleanHexGridPanel() {
+    public HexGridPanel() {
 
         hexCoordinates = new Point[DIAMETER_HEXAGONS][DIAMETER_HEXAGONS];//needed to track hexes within board
         poulateHexArray();//populate the array^
@@ -66,6 +66,9 @@ public class CleanHexGridPanel extends JPanel {
         return null; //No atom found at the given point
     }
 
+    public void atomsAdd(Atom atom){
+        atoms.add(atom);
+    }
     public void poulateHexArray(){
         int radius = DIAMETER_HEXAGONS / 2;
 
@@ -127,8 +130,8 @@ public class CleanHexGridPanel extends JPanel {
                 g2d.drawString(coordText, point.x - textWidth / 2, point.y + textHeight / 4);
             }
         }
-        Path2D test = createHexagon(700,700,40);
-        g2d.draw(test);
+//        Path2D test = createHexagon(700,700,40);
+//        g2d.draw(test);
 
 
 
@@ -164,7 +167,7 @@ public class CleanHexGridPanel extends JPanel {
 
     }
 
-    private Point pixelToAxial(int x, int y) {
+    Point pixelToAxial(int x, int y) {
         double q;
         double r;
 
@@ -179,10 +182,6 @@ public class CleanHexGridPanel extends JPanel {
         //Round the coordinates to the nearest whole number to snap to the closest hex
         return new Point((int) Math.round(q), (int) Math.round(r));
     }
-
-
-
-
 
     private Path2D createHexagon(int x, int y, int size) {
         Path2D path = new Path2D.Double();
@@ -219,7 +218,7 @@ public class CleanHexGridPanel extends JPanel {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
-        CleanHexGridPanel hex = new CleanHexGridPanel();
+        HexGridPanel hex = new HexGridPanel();
         frame.add(hex);
 
         JLabel titleLabel = new JLabel("  BLACK BOX +");
@@ -234,4 +233,7 @@ public class CleanHexGridPanel extends JPanel {
         //hex.printHexagonCoordinates();
     }
 
+    public Point[][] getHexCoordinates() {
+        return hexCoordinates;
+    }
 }
