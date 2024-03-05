@@ -1,30 +1,42 @@
 package src;
-
 import java.awt.Point;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Atom {
 
     private Point position;
-    private ArrayList<Point> neighbors;
+    //private ArrayList<Point> neighbours;
+
+    private HashMap<Point,Point> neighbours;
 
     public Atom(Point position) {
         this.position = position;
-        this.neighbors = new ArrayList<>();
+        this.neighbours = new HashMap<>();
     }
 
     public Point getPosition() {
         return position;
     }
 
-    public void addNeighbor(Point neighbor) {
-        if (!neighbors.contains(neighbor)) {
-            neighbors.add(neighbor);
+    public void addNeighbour(Point neighbour,Point direction) {
+        if (!neighbours.containsKey(neighbour)) {
+            neighbours.put(neighbour, direction);
         }
     }
 
-    public ArrayList<Point> getNeighbors() {
-        return neighbors;
+    public HashMap<Point,Point> getNeighbours() {
+        return neighbours;
+    }
+
+    public void updateNeighbours() {//TODO move to Atom class
+        // Clear existing Neighbours
+        getNeighbours().clear();
+        // Recalculate Neighbours
+        for (Point dir : HexBoard.DIRECTIONS) {
+            Point NeighbourPoint = new Point(getPosition().x + dir.x, getPosition().y + dir.y);
+            addNeighbour(NeighbourPoint,dir);
+
+        }
     }
 
 
@@ -32,9 +44,9 @@ public class Atom {
     public String toString() {
         StringBuilder sb = new StringBuilder("Atom at: ");
         sb.append(position.toString());
-        sb.append(" with neighbors: ");
-        for (Point neighbor : neighbors) {
-            sb.append(neighbor.toString());
+        sb.append(" with Neighbours: ");
+        for (Point Neighbour : neighbours.keySet()) {
+            sb.append(Neighbour.toString());
             sb.append(" ");
         }
         return sb.toString().trim(); // Trim to remove the last extra space

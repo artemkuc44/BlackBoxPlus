@@ -62,7 +62,7 @@ public class MainMenu {
                 frame.getContentPane().removeAll();
 
 
-                HexGridPanel hexPanel = new HexGridPanel();
+                HexBoard hexPanel = new HexBoard();
 
 
                 frame.add(hexPanel, BorderLayout.CENTER);
