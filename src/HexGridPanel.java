@@ -109,6 +109,8 @@ public class HexGridPanel extends JPanel {
         // Calculate the radius (in hexagons)
         int radius = DIAMETER_HEXAGONS / 2;//9/2 == 4 (int)
 
+
+
         FontMetrics metrics = g.getFontMetrics(); // Get font metrics to adjust text positioning
 
         //Draw the hexagons
@@ -215,6 +217,9 @@ public class HexGridPanel extends JPanel {
     }
 
     public static void main(String[] args) {
+
+        //can get rid of all this as the hexgrid is being called in the main menu function.
+
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 800);
