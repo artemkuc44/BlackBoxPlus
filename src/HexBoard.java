@@ -13,7 +13,7 @@ public class HexBoard extends JPanel {
     private static final int HEX_SIZE = 40;//also known as the radius ie. 40 pixels from center to any given corner
     private static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
     private static final int MAX_ATOMS = 6;//max number of atoms
-    private ArrayList<Atom> atoms = new ArrayList<>();//array List of atoms placed
+    protected ArrayList<Atom> atoms = new ArrayList<>();//array List of atoms placed
     public ArrayList<Point> hexCoordinates;//All internal hexagon coords
     private ArrayList<Point> borderHex;//all external border hexagons
 
@@ -47,14 +47,14 @@ public class HexBoard extends JPanel {
                     Atom existingAtom = findAtomByAxial(hexCoord);//try find atom in atoms arrayList
                     if (existingAtom != null) {
                         // Atom exists, so remove it
-                        existingAtom.updateNeighbours();
+                        //existingAtom.updateNeighbours();
                         atoms.remove(existingAtom);
                     }
                     else if(atoms.size() != MAX_ATOMS) {
                         // Atom doesn't exist, create and add to arraylist;
                         Atom newAtom = new Atom(hexCoord);
                         atoms.add(newAtom);
-                        newAtom.updateNeighbours();
+                        //newAtom.updateNeighbours();
                     }
 
                 }
@@ -254,27 +254,26 @@ public class HexBoard extends JPanel {
 
     //should probably be in ray class in future returning exit point
     public void moveRay(Ray ray){
-        //TODO case 8 in black box rules -> currently absorbing should be sending back
         //Point tempPoint = ray.getEntryPoint();//very intereseting case where entry point was being refrenced and altered despite being final
         Point tempPoint = new Point(ray.getEntryPoint().x,ray.getEntryPoint().y);//new point needed to be initialised to removed any reference to entry point
 
-
-
+        Point originalRayDirection = ray.getDirection();
         while(hexCoordinates.contains(tempPoint) || (borderHex.contains(tempPoint))){
             for(Atom atom:atoms){
+//                System.out.println("atom?" + new Point(tempPoint.x + ray.getDirection().x, tempPoint.y+ray.getDirection().y));
+//                System.out.println("temp pos" + tempPoint + "\n");
+
                 if(atom.getNeighbours().containsKey(ray.getEntryPoint())){//checks for deflection with circle of influence on border
                     ray.setExitPoint(ray.getEntryPoint());
                     System.out.println("exit point" + ray.getExitPoint());
 
                     return;
                 }
-
                 else if(atom.getNeighbours().containsKey(tempPoint)){
                     // Retrieve the direction from the atom to the Neighbour (which is the key's value)
                     Point neighbourDirection = atom.getNeighbours().get(tempPoint);
                     // Add directions
                     ray.setDirection(new Point(ray.getDirection().x + neighbourDirection.x, ray.getDirection().y + neighbourDirection.y));
-
                 }
 
             }
@@ -288,12 +287,7 @@ public class HexBoard extends JPanel {
             tempPoint.x += ray.getDirection().x;
             tempPoint.y += ray.getDirection().y;
 
-            if(ray.getDirection().equals(new Point(0,0))){//checks for absorption
-                ray.setExitPoint(tempPoint);
-                System.out.println("exit point" + ray.getExitPoint());
 
-                return;
-            }
         }
         tempPoint.x -= ray.getDirection().x;
         tempPoint.y -= ray.getDirection().y;

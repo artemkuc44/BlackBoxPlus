@@ -7,11 +7,12 @@ public class Atom {
     private Point position;
     //private ArrayList<Point> neighbours;
 
-    private HashMap<Point,Point> neighbours;
+    private final HashMap<Point,Point> neighbours;
 
     public Atom(Point position) {
         this.position = position;
         this.neighbours = new HashMap<>();
+        updateNeighbours();
     }
 
     public Point getPosition() {
@@ -28,7 +29,7 @@ public class Atom {
         return neighbours;
     }
 
-    public void updateNeighbours() {//TODO move to Atom class
+    public void updateNeighbours() {
         // Clear existing Neighbours
         getNeighbours().clear();
         // Recalculate Neighbours
