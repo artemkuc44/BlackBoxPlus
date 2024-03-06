@@ -254,29 +254,52 @@ public class HexBoard extends JPanel {
 
     //should probably be in ray class in future returning exit point
     public void moveRay(Ray ray){
-        Point point = ray.getEntryPoint();
+        //TODO case 8 in black box rules -> currently absorbing should be sending back
+        //Point tempPoint = ray.getEntryPoint();//very intereseting case where entry point was being refrenced and altered despite being final
+        Point tempPoint = new Point(ray.getEntryPoint().x,ray.getEntryPoint().y);//new point needed to be initialised to removed any reference to entry point
 
-        while(hexCoordinates.contains(point) || borderHex.contains(point)){
+
+
+        while(hexCoordinates.contains(tempPoint) || (borderHex.contains(tempPoint))){
             for(Atom atom:atoms){
-                if(atom.getNeighbours().containsKey(point)){
+                if(atom.getNeighbours().containsKey(ray.getEntryPoint())){//checks for deflection with circle of influence on border
+                    ray.setExitPoint(ray.getEntryPoint());
+                    System.out.println("exit point" + ray.getExitPoint());
+
+                    return;
+                }
+
+                else if(atom.getNeighbours().containsKey(tempPoint)){
                     // Retrieve the direction from the atom to the Neighbour (which is the key's value)
-                    Point neighbourDirection = atom.getNeighbours().get(point);
+                    Point neighbourDirection = atom.getNeighbours().get(tempPoint);
                     // Add directions
-                    ray.setDirection(new Point(ray.getDirection().x + neighbourDirection.x, ray.getDirection().y + neighbourDirection.y));                }
+                    ray.setDirection(new Point(ray.getDirection().x + neighbourDirection.x, ray.getDirection().y + neighbourDirection.y));
+
+                }
+
             }
-            if(rayMovement.contains(point)){
-                rayMovement.remove(point);
+            if(rayMovement.contains(tempPoint)){
+                rayMovement.remove(tempPoint);
             }else{
-                rayMovement.add(new Point(point.x,point.y));
+                rayMovement.add(new Point(tempPoint.x,tempPoint.y));
 
             }
 
-            point.x += ray.getDirection().x;
-            point.y += ray.getDirection().y;
+            tempPoint.x += ray.getDirection().x;
+            tempPoint.y += ray.getDirection().y;
+
+            if(ray.getDirection().equals(new Point(0,0))){//checks for absorption
+                ray.setExitPoint(tempPoint);
+                System.out.println("exit point" + ray.getExitPoint());
+
+                return;
+            }
         }
-        point.x -= ray.getDirection().x;
-        point.y -= ray.getDirection().y;
-        ray.setExitPoint(point);
+        tempPoint.x -= ray.getDirection().x;
+        tempPoint.y -= ray.getDirection().y;
+        ray.setExitPoint(tempPoint);
+        System.out.println("exit point" + ray.getExitPoint());
+
         repaint();
     }
 

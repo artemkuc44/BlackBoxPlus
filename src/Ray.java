@@ -2,7 +2,7 @@ package src;
 import java.awt.*;
 
 public class Ray{
-    private Point entryPoint;//axial coord of hexagons from which is enters
+    private final Point entryPoint;//axial coord of hexagons from which is enters
 
     private Point direction;//directions of array movement;
 
@@ -35,6 +35,7 @@ public class Ray{
         this.exitPoint = exitPoint;
     }
 
-
+    public Point getExitPoint() {
+        return exitPoint;
+    }
 }
-
