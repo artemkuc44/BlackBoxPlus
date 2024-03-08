@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public class MainMenu {
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Blackbox +"); //title of the frame
+        JFrame frame = new JFrame("Blackbox +"); //title of the frame changes
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
         frame.setSize(800, 800);
 
