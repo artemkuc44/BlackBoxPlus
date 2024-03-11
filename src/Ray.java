@@ -4,7 +4,7 @@ import java.awt.*;
 public class Ray{
     private final Point entryPoint;//axial coord of hexagons from which is enters
 
-    private Point direction;//directions of array movement;
+    private Point direction;//direction of ray movement;
 
     private Point exitPoint;
     public Ray(Point entryPoint,Point direction){

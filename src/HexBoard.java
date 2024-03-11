@@ -75,7 +75,7 @@ public class HexBoard extends JPanel {
     public Point closestSide(Point clickedPoint){//returns direction of ray movement
         double min = 1000;//needed to initialise to something
         Point minPoint = clickedPoint;//needed to initialise to something
-        for(Point internalPoint:hexCoordinates){//for all hexCoordinates points (inefficient af)
+        for(Point internalPoint:hexCoordinates){//for all hexCoordinates points (inefficient)//TODO make more efficient
             Point pixelInternal = axialToPixel(internalPoint.x, internalPoint.y);//convert to pixel(needed for distance)
             if(clickedPoint.distance(pixelInternal) < min){
                 min = clickedPoint.distance(pixelInternal);
@@ -254,47 +254,39 @@ public class HexBoard extends JPanel {
 
     //should probably be in ray class in future returning exit point
     public void moveRay(Ray ray){
-        //Point tempPoint = ray.getEntryPoint();//very intereseting case where entry point was being refrenced and altered despite being final
-        Point tempPoint = new Point(ray.getEntryPoint().x,ray.getEntryPoint().y);//new point needed to be initialised to removed any reference to entry point
+        //Point currPoint = ray.getEntryPoint();//very intereseting case where entry point was being refrenced and altered despite being final
+        Point currPoint = new Point(ray.getEntryPoint().x,ray.getEntryPoint().y);//new point needed to be initialised to removed any reference to entry point
+        System.out.println("entry point" + ray.getEntryPoint());
 
-        Point originalRayDirection = ray.getDirection();
-        while(hexCoordinates.contains(tempPoint) || (borderHex.contains(tempPoint))){
-            for(Atom atom:atoms){
-//                System.out.println("atom?" + new Point(tempPoint.x + ray.getDirection().x, tempPoint.y+ray.getDirection().y));
-//                System.out.println("temp pos" + tempPoint + "\n");
-
+        while(hexCoordinates.contains(currPoint) || (borderHex.contains(currPoint))){
+            for(Atom atom:atoms){//traverse atom array
                 if(atom.getNeighbours().containsKey(ray.getEntryPoint())){//checks for deflection with circle of influence on border
                     ray.setExitPoint(ray.getEntryPoint());
                     System.out.println("exit point" + ray.getExitPoint());
-
                     return;
                 }
-                else if(atom.getNeighbours().containsKey(tempPoint)){
+                else if(atom.getNeighbours().containsKey(currPoint)){
                     // Retrieve the direction from the atom to the Neighbour (which is the key's value)
-                    Point neighbourDirection = atom.getNeighbours().get(tempPoint);
+                    Point neighbourDirection = atom.getNeighbours().get(currPoint);
                     // Add directions
                     ray.setDirection(new Point(ray.getDirection().x + neighbourDirection.x, ray.getDirection().y + neighbourDirection.y));
                 }
-
             }
-            if(rayMovement.contains(tempPoint)){
-                rayMovement.remove(tempPoint);
+            if(rayMovement.contains(currPoint)){
+                rayMovement.remove(currPoint);
             }else{
-                rayMovement.add(new Point(tempPoint.x,tempPoint.y));
-
+                rayMovement.add(new Point(currPoint.x,currPoint.y));
             }
-
-            tempPoint.x += ray.getDirection().x;
-            tempPoint.y += ray.getDirection().y;
-
-
+            currPoint.x += ray.getDirection().x;
+            currPoint.y += ray.getDirection().y;
         }
-        tempPoint.x -= ray.getDirection().x;
-        tempPoint.y -= ray.getDirection().y;
-        ray.setExitPoint(tempPoint);
+        currPoint.x -= ray.getDirection().x;
+        currPoint.y -= ray.getDirection().y;
+        ray.setExitPoint(currPoint);
+        repaint();
+
         System.out.println("exit point" + ray.getExitPoint());
 
-        repaint();
     }
 
 //    public static JFrame initialiseFrame(){

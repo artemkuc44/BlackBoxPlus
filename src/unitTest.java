@@ -115,8 +115,11 @@ class unitTest {
 
     }
 
+
+
     @Test
-    void testRayDeflection(){
+    void testRayDeflection3(){
+        //recreates diagram number 3 from Black Box+ Rules pdf.
         Atom atom1 = new Atom(new Point(-2,0));
         Atom atom2 = new Atom(new Point(-1,0));
         Atom atom3 = new Atom(new Point(0,-1));
@@ -131,16 +134,12 @@ class unitTest {
         hexGridPanel.atoms.add(atom5);
         hexGridPanel.atoms.add(atom6);
 
-
-
-
         Ray ray10 = new Ray(new Point(-5,0),new Point(1,0));
         Ray ray24 = new Ray(new Point(-2,5),new Point(0,-1));
         Ray ray28 = new Ray(new Point(0,5),new Point(0,-1));
         Ray ray32 = new Ray(new Point(2,3),new Point(0,-1));
         Ray ray41 = new Ray(new Point(5,-2),new Point(-1,0));
         Ray ray8 = new Ray(new Point(-4,-1),new Point(1,0));
-
 
         hexGridPanel.moveRay(ray10);
         hexGridPanel.moveRay(ray24);
@@ -156,10 +155,40 @@ class unitTest {
         assertEquals(ray8.getEntryPoint(),ray8.getExitPoint());
 
         //assertEquals(new Point(-3,0),ray10.getExitPoint());//absorbtion
-
-
-
     }
+    @Test
+    void testRayDeflection4(){
+        //recreates number 4 from Black Box+ Rules pdf
+        Atom atom7 = new Atom(new Point(-3,3));//bottom left
+        Atom atom8 = new Atom(new Point(-1,4));//bottom right
+        Atom atom9 = new Atom(new Point(2,0));//middle right
+        Atom atom10 = new Atom(new Point(1,0));//middle left
+        Atom atom11 = new Atom(new Point(2,-2));//top right
+        Atom atom12 = new Atom(new Point(0,-2));//top left
+
+        hexGridPanel.atoms.add(atom7);
+        hexGridPanel.atoms.add(atom8);
+        hexGridPanel.atoms.add(atom9);
+        hexGridPanel.atoms.add(atom10);
+        hexGridPanel.atoms.add(atom11);
+        hexGridPanel.atoms.add(atom12);
+
+
+        Ray ray30 = new Ray(new Point(1,4),new Point(0,-1));
+        Ray ray14 = new Ray(new Point(-5,2),new Point(1,0));
+        Ray ray48 = new Ray(new Point(4,-5),new Point(-1,1));
+
+        hexGridPanel.moveRay(ray30);
+        hexGridPanel.moveRay(ray14);
+        hexGridPanel.moveRay(ray48);
+
+        //assertEquals(new Point(-2,3),ray30.getExitPoint());//absorbtion
+        assertEquals(ray14.getEntryPoint(),ray14.getExitPoint());//reflection
+
+        assertEquals(new Point(1,-5),ray48.getExitPoint());
+    }
+    //TODO check if can add same atom twice
+    //TODO try enter ray not on border
 
 }
 
