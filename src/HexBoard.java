@@ -1,5 +1,7 @@
 package src;
 import javax.swing.*;
+
+
 import java.awt.*;
 
 import java.awt.event.MouseAdapter;
@@ -254,11 +256,13 @@ public class HexBoard extends JPanel {
 
     //should probably be in ray class in future returning exit point
     public void moveRay(Ray ray){
+        int count = 0;//how many neighbours
         //Point currPoint = ray.getEntryPoint();//very intereseting case where entry point was being refrenced and altered despite being final
         Point currPoint = new Point(ray.getEntryPoint().x,ray.getEntryPoint().y);//new point needed to be initialised to removed any reference to entry point
         System.out.println("entry point" + ray.getEntryPoint());
 
         while(hexCoordinates.contains(currPoint) || (borderHex.contains(currPoint))){
+            count = 0;
             for(Atom atom:atoms){//traverse atom array
                 if(atom.getNeighbours().containsKey(ray.getEntryPoint())){//checks for deflection with circle of influence on border
                     ray.setExitPoint(ray.getEntryPoint());
@@ -270,7 +274,18 @@ public class HexBoard extends JPanel {
                     Point neighbourDirection = atom.getNeighbours().get(currPoint);
                     // Add directions
                     ray.setDirection(new Point(ray.getDirection().x + neighbourDirection.x, ray.getDirection().y + neighbourDirection.y));
+                    System.out.println("\n");
+
+                    System.out.println("current point " + currPoint);
+
+                    System.out.println("Ray direction " + ray.getDirection());
+                    System.out.println("\n");
+                    count++;
                 }
+            }
+            if(ray.getDirection().equals(new Point(0,0)) && count == 1){
+                ray.setExitPoint(currPoint);
+                return;
             }
             if(rayMovement.contains(currPoint)){
                 rayMovement.remove(currPoint);
@@ -280,7 +295,7 @@ public class HexBoard extends JPanel {
             currPoint.x += ray.getDirection().x;
             currPoint.y += ray.getDirection().y;
         }
-        currPoint.x -= ray.getDirection().x;
+        currPoint.x -= ray.getDirection().x;//adjust
         currPoint.y -= ray.getDirection().y;
         ray.setExitPoint(currPoint);
         repaint();

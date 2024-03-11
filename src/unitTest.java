@@ -154,7 +154,7 @@ class unitTest {
         assertEquals(ray41.getEntryPoint(),ray41.getExitPoint());
         assertEquals(ray8.getEntryPoint(),ray8.getExitPoint());
 
-        //assertEquals(new Point(-3,0),ray10.getExitPoint());//absorbtion
+        assertEquals(new Point(-3,0),ray10.getExitPoint());//absorbtion
     }
     @Test
     void testRayDeflection4(){
@@ -182,7 +182,7 @@ class unitTest {
         hexGridPanel.moveRay(ray14);
         hexGridPanel.moveRay(ray48);
 
-        //assertEquals(new Point(-2,3),ray30.getExitPoint());//absorbtion
+        assertEquals(new Point(-2,3),ray30.getExitPoint());//absorbtion
         assertEquals(ray14.getEntryPoint(),ray14.getExitPoint());//reflection
 
         assertEquals(new Point(1,-5),ray48.getExitPoint());
