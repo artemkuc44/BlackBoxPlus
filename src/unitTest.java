@@ -1,5 +1,4 @@
 package src;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +39,7 @@ class unitTest {
         // Since we don't have a direct method to verify if an Atom was added at (x,y), we might need to adapt this
         // For example, assuming a method to check if an Atom exists at a certain hex coordinate (after converting pixel to hex)
         Point hexCoord = hexGridPanel.pixelToAxial(x, y); // Assuming this method is accessible
-        assertNotNull(hexGridPanel.findAtomByAxial(hexCoord), "An Atom should be added at the clicked hex coordinate");
+        assertNotNull(hexGridPanel.findAtomByAxial(hexGridPanel.atoms,hexCoord), "An Atom should be added at the clicked hex coordinate");
     }
 
 
@@ -51,13 +50,13 @@ class unitTest {
         Atom atom = new Atom(testPoint);
         hexGridPanel.atoms.add(atom);
 
-        Atom foundAtom = hexGridPanel.findAtomByAxial(testPoint);
+        Atom foundAtom = hexGridPanel.findAtomByAxial(hexGridPanel.atoms,testPoint);
         assertNotNull(foundAtom);
         assertEquals(testPoint, foundAtom.getPosition());
 
         //try find non-existing atom
         Point nonExistingPoint = new Point(4, 4);
-        assertNull(hexGridPanel.findAtomByAxial(nonExistingPoint));
+        assertNull(hexGridPanel.findAtomByAxial(hexGridPanel.atoms,nonExistingPoint));
     }
 
 
@@ -141,12 +140,12 @@ class unitTest {
         Ray ray41 = new Ray(new Point(5,-2),new Point(-1,0));
         Ray ray8 = new Ray(new Point(-4,-1),new Point(1,0));
 
-        hexGridPanel.moveRay(ray10);
-        hexGridPanel.moveRay(ray24);
-        hexGridPanel.moveRay(ray28);
-        hexGridPanel.moveRay(ray32);
-        hexGridPanel.moveRay(ray41);
-        hexGridPanel.moveRay(ray8);
+        hexGridPanel.moveRay(ray10,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray24,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray28,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray32,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray41,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray8,hexGridPanel.atoms);
 
         assertEquals(new Point(-5,4),ray24.getExitPoint());
         assertEquals(ray28.getEntryPoint(),ray28.getExitPoint());
@@ -178,9 +177,9 @@ class unitTest {
         Ray ray14 = new Ray(new Point(-5,2),new Point(1,0));
         Ray ray48 = new Ray(new Point(4,-5),new Point(-1,1));
 
-        hexGridPanel.moveRay(ray30);
-        hexGridPanel.moveRay(ray14);
-        hexGridPanel.moveRay(ray48);
+        hexGridPanel.moveRay(ray30,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray14,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray48,hexGridPanel.atoms);
 
         assertEquals(new Point(-2,3),ray30.getExitPoint());//absorbtion
         assertEquals(ray14.getEntryPoint(),ray14.getExitPoint());//reflection
