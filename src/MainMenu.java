@@ -9,13 +9,14 @@ public class MainMenu {
     private static final int DISPLAY_HEIGHT = 800;
     private static final int DISPLAY_WIDTH = 800;
     private static final int BUTTON_HEIGHT = 100;
-
     private static final int BUTTON_WIDTH = 200;
+
+    private static JFrame frame;
 
 
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Blackbox +"); //title of the frame changes
+        frame = new JFrame("Blackbox +"); //title of the frame changes
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
         frame.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
@@ -151,6 +152,8 @@ public class MainMenu {
                 frame.repaint(); //painting
             }
         });
+
+
 
 
 

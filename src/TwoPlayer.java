@@ -5,10 +5,15 @@ import javax.swing.border.Border;
 import java.awt.*;
 
 
+import java.awt.event.ActionEvent;
 import java.util.*;
 
 
 public class TwoPlayer extends HexBoard {
+    private static final int DISPLAY_HEIGHT = 600;
+    private static final int DISPLAY_WIDTH = 600;
+    private static final int BUTTON_HEIGHT = 75;
+    private static final int BUTTON_WIDTH = 150;
     boolean finish = false;
     protected int currentPlayer; // 1 or 2 to indicate whose turn it is
     protected ArrayList<Atom> playerOneAtoms = new ArrayList<>();
@@ -34,6 +39,7 @@ public class TwoPlayer extends HexBoard {
     public TwoPlayer() {
         currentPlayer = 1;
         score = 100;
+
         //Initialize finish button
         finishButton = new JButton("Finish");
         finishButton.setBounds(25, 25, 100, 50);
@@ -42,6 +48,7 @@ public class TwoPlayer extends HexBoard {
         this.add(finishButton);
         finishButton.setVisible(false); //Initially hide the button
         drawRayPaths = false;
+
 
         //Initialize the score board label with a border and background
         scoreBoard = new JLabel("Score: " + score, SwingConstants.CENTER);
@@ -58,6 +65,97 @@ public class TwoPlayer extends HexBoard {
         this.add(scoreBoard);
         scoreBoard.setVisible(false);
 
+
+
+    }
+
+    protected void finishScreen() {
+        JFrame frame = new JFrame("Blackbox +"); // Corrected method name and title of the frame
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
+        frame.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+
+        JPanel GameOverLabelPanel = new JPanel();
+        GameOverLabelPanel.setLayout(new BorderLayout());
+        JPanel FinalScoreLabelPanel = new JPanel();
+        FinalScoreLabelPanel.setLayout(new BorderLayout());
+        JPanel WinnerLabelPanel = new JPanel();
+        WinnerLabelPanel.setLayout(new BorderLayout());
+
+        JLabel GameOverLabel = new JLabel("Game Over", SwingConstants.CENTER); //putting the title in the centre
+        GameOverLabel.setFont(new Font(GameOverLabel.getFont().getName(), Font.BOLD, 70));
+        GameOverLabelPanel.add(GameOverLabel, BorderLayout.NORTH);
+
+        JLabel FinalScoreLabel = new JLabel("Final Score: "+ score, SwingConstants.CENTER); //putting the score in the centre under title
+        FinalScoreLabel.setFont(new Font(FinalScoreLabel.getFont().getName(), Font.BOLD, 50));
+        FinalScoreLabelPanel.add(FinalScoreLabel, BorderLayout.NORTH);
+
+
+        // Initialize the northPanel with BoxLayout to stack components vertically
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.PAGE_AXIS));
+
+        // Add the GameOverLabelPanel and FinalScoreLabelPanel to the northPanel
+        topPanel.add(GameOverLabelPanel);
+        topPanel.add(FinalScoreLabelPanel);
+
+        if(currentPlayer==2) {//doesnt work trying to make work for single player...dosent work
+            if (score < 70) {//placeholder for the moment can be changed to be affected by the atoms
+                JLabel WinnerLabel = new JLabel("Player 1 Wins!", SwingConstants.CENTER); //putting the score in the centre under title
+                WinnerLabel.setFont(new Font(WinnerLabel.getFont().getName(), Font.BOLD, 35));
+                WinnerLabelPanel.add(WinnerLabel, BorderLayout.NORTH);
+                topPanel.add(WinnerLabelPanel);
+            } else {
+                JLabel WinnerLabel = new JLabel("Player 2 Wins!", SwingConstants.CENTER); //putting the score in the centre under title
+                WinnerLabel.setFont(new Font(WinnerLabel.getFont().getName(), Font.BOLD, 35));
+                WinnerLabelPanel.add(WinnerLabel, BorderLayout.NORTH);
+                topPanel.add(WinnerLabelPanel);
+            }
+        }
+
+        JButton ReplayButton = new JButton("Replay");
+        JButton MMButton = new JButton("Main Menu");
+        JButton ExitButton = new JButton("Exit");
+
+        ReplayButton.setFont(new Font("Arial", Font.BOLD, 20));
+        ReplayButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT)); //dimensions for button
+
+        // Customizing the rules button
+        MMButton.setFont(new Font("Arial", Font.BOLD, 20));
+        MMButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+
+        // Customizing the 2 Player button
+        ExitButton.setFont(new Font("Arial", Font.BOLD, 20));
+        ExitButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+
+        JPanel finishScreenPanel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints gbcReplay = new GridBagConstraints(); //css basically for starting button
+        gbcReplay.gridwidth = GridBagConstraints.REMAINDER; //skips line
+        gbcReplay.fill = GridBagConstraints.HORIZONTAL;
+        gbcReplay.insets = new Insets(0, 0, 20, 0); //padding for where the button is.
+        gbcReplay.anchor = GridBagConstraints.PAGE_END; //ending the css
+
+        GridBagConstraints gbcMM = new GridBagConstraints();
+        gbcMM.gridwidth = GridBagConstraints.REMAINDER;
+        gbcMM.fill = GridBagConstraints.HORIZONTAL;
+        gbcMM.insets = new Insets(10, 0, 10, 0);
+
+        GridBagConstraints gbcExit = new GridBagConstraints();
+        gbcExit.gridwidth = GridBagConstraints.REMAINDER;
+        gbcExit.fill = GridBagConstraints.HORIZONTAL;
+        gbcExit.insets = new Insets(20, 0, 10, 0);
+
+        //adding the buttons and their css to main menu panel.
+        finishScreenPanel.add(ReplayButton, gbcReplay);
+        finishScreenPanel.add(MMButton, gbcMM); // Adding the new button
+        finishScreenPanel.add(ExitButton, gbcExit);
+
+        frame.setLayout(new BorderLayout());
+        frame.add(topPanel, BorderLayout.NORTH); // Add the northPanel with all the message labels to the north
+        frame.add(finishScreenPanel, BorderLayout.SOUTH); // Add the FinishScreenPanel with buttons to the south
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     @Override
@@ -93,6 +191,8 @@ public class TwoPlayer extends HexBoard {
                 Ray ray = new Ray(hexCoord, closestSide(clickedPoint));
                 moveRay(ray, playerOneAtoms);
                 playerTwoRays.add(ray);
+                score--;
+                scoreBoard.setText("Score: " + score);
             }
 
         }
@@ -106,6 +206,7 @@ public class TwoPlayer extends HexBoard {
         }
         repaint();
     }
+
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -142,12 +243,19 @@ public class TwoPlayer extends HexBoard {
             for (Ray ray : playerTwoRays) {
                 if (ray.getType() == 1) {
                     g2d.setColor(new Color(0, 0, 0));//black for absorbtion
-                } else {
+                    System.out.println(score);
+
+                }
+                else {
                     g2d.setColor(new Color(ray.getR(), ray.getG(), ray.getB()));//other non absorbed
+                    System.out.println(score);
+
                 }
                 g2d.fill(createMarker(ray.getEntryPoint(), ray.getEntryDirection()));
                 g2d.fill(createMarker(ray.getExitPoint(), new Point(ray.getDirection().x * -1, ray.getDirection().y * -1)));
             }
+
+
         }
         if (finish) {
             ArrayList<Point> guessedCorrectly = new ArrayList<>();
@@ -178,7 +286,7 @@ public class TwoPlayer extends HexBoard {
                 }
                 //Correctly guessed atoms are already drawn in green so no need to redraw them here.
             }
+            finishScreen();
         }
-
     }
 }
