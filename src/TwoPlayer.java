@@ -187,12 +187,15 @@ public class TwoPlayer extends HexBoard {
                 SinglePlayer singlePlayerPanel = new SinglePlayer();
                 frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
                 frame.add(singlePlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+                frame.setTitle("Single Player");
                 frame.validate(); //validates
                 frame.repaint(); //painting
             }else{
                 TwoPlayer twoPlayerPanel = new TwoPlayer();
                 frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
                 frame.add(twoPlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+                frame.setTitle("Two Player");
+
                 frame.validate(); //validates
                 frame.repaint(); //painting
 

@@ -16,6 +16,9 @@ public class MainMenu {
     protected static JFrame frame;
     protected static String GameMode;
 
+    protected static JLabel gameModeLabel = new JLabel("Select a Game Mode", SwingConstants.CENTER);
+
+
     static class RoundedBorder implements Border {
         private int radius;
         RoundedBorder(int radius) {
@@ -50,6 +53,11 @@ public class MainMenu {
 
 
         JPanel mainMenuPanel = new JPanel(new GridBagLayout()); //creating panel for mm
+
+
+
+
+
 
         JButton sandboxButton = new JButton("Sandbox");
         JButton twoPlayerButton = new JButton("2 Player");
@@ -96,6 +104,7 @@ public class MainMenu {
         gbcGameModePanel.fill = GridBagConstraints.HORIZONTAL;
         gbcGameModePanel.insets = new Insets(0, 0, 20, 0);
         gbcGameModePanel.anchor = GridBagConstraints.PAGE_END;
+
 
         mainMenuPanel.add(sandboxPanel, gbcGameModePanel);
         mainMenuPanel.add(twoPlayerPanel, gbcGameModePanel); // Use the same constraints for uniformity
@@ -254,6 +263,7 @@ public class MainMenu {
 
 
                 frame.add(hexPanel, BorderLayout.CENTER); //adds the hex panel.
+                frame.setTitle("SandBox mode"); // Set the title for Single Player mode
 
 
                 frame.validate(); //validates
@@ -265,6 +275,7 @@ public class MainMenu {
         twoPlayerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
 
 
@@ -272,7 +283,7 @@ public class MainMenu {
 
 
                 frame.add(twoPlayerPanel, BorderLayout.CENTER); //adds the hex panel.
-
+                frame.setTitle("Two Player");
 
                 frame.validate(); //validates
                 frame.repaint(); //painting
@@ -284,6 +295,7 @@ public class MainMenu {
         singlePlayerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
 
 
@@ -291,6 +303,7 @@ public class MainMenu {
 
 
                 frame.add(singlePlayer, BorderLayout.CENTER); //adds the hex panel.
+                frame.setTitle("Single Player");
 
 
                 frame.validate(); //validates
