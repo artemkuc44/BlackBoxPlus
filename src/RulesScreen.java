@@ -3,6 +3,8 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 
+
+//Update No need for Rules Screen
 public class RulesScreen extends JFrame {
     public RulesScreen(String gameMode) {
         setTitle("Rules:"+gameMode);

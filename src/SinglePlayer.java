@@ -11,6 +11,7 @@ public class SinglePlayer extends TwoPlayer {
         finishButton.setVisible(false); // Initially hide the finish button
         scoreBoard.setVisible(true);
         drawRayPaths = false;
+        super.isSinglePlayer = true;
     }
 
     private void randomlyAllocateAtoms() {

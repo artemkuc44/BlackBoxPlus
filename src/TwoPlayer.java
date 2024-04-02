@@ -1,28 +1,32 @@
 package src;
 
+import Hexagon.Main;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
 
-import java.awt.event.ActionEvent;
 import java.util.*;
 
 
 public class TwoPlayer extends HexBoard {
-    private static final int DISPLAY_HEIGHT = 600;
-    private static final int DISPLAY_WIDTH = 600;
-    private static final int BUTTON_HEIGHT = 75;
-    private static final int BUTTON_WIDTH = 150;
+    private static final int DISPLAY_HEIGHT = 800;
+    private static final int DISPLAY_WIDTH = 800;
+    private static final int BUTTON_HEIGHT = 100;
+    private static final int BUTTON_WIDTH = 200;
     boolean finish = false;
     protected int currentPlayer; // 1 or 2 to indicate whose turn it is
     protected ArrayList<Atom> playerOneAtoms = new ArrayList<>();
     private ArrayList<Atom> playerTwoGuesses = new ArrayList<>();
     private ArrayList<Ray> playerTwoRays = new ArrayList<>();
 
+    boolean isSinglePlayer = false;
+
     protected JButton finishButton;
     protected JLabel scoreBoard;
     protected int score;
+
 
     private void finishAction() {
         if (currentPlayer == 1) {
@@ -65,12 +69,11 @@ public class TwoPlayer extends HexBoard {
         this.add(scoreBoard);
         scoreBoard.setVisible(false);
 
-
-
     }
 
     protected void finishScreen() {
-        JFrame frame = new JFrame("Blackbox +"); // Corrected method name and title of the frame
+
+        JFrame frame = new JFrame("BlackBox+"); // Corrected method name and title of the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
         frame.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
@@ -82,11 +85,11 @@ public class TwoPlayer extends HexBoard {
         WinnerLabelPanel.setLayout(new BorderLayout());
 
         JLabel GameOverLabel = new JLabel("Game Over", SwingConstants.CENTER); //putting the title in the centre
-        GameOverLabel.setFont(new Font(GameOverLabel.getFont().getName(), Font.BOLD, 70));
+        GameOverLabel.setFont(new Font(GameOverLabel.getFont().getName(), Font.BOLD, 90));
         GameOverLabelPanel.add(GameOverLabel, BorderLayout.NORTH);
 
         JLabel FinalScoreLabel = new JLabel("Final Score: "+ score, SwingConstants.CENTER); //putting the score in the centre under title
-        FinalScoreLabel.setFont(new Font(FinalScoreLabel.getFont().getName(), Font.BOLD, 50));
+        FinalScoreLabel.setFont(new Font(FinalScoreLabel.getFont().getName(), Font.BOLD, 70));
         FinalScoreLabelPanel.add(FinalScoreLabel, BorderLayout.NORTH);
 
 
@@ -99,16 +102,32 @@ public class TwoPlayer extends HexBoard {
         topPanel.add(FinalScoreLabelPanel);
 
         if(currentPlayer==2) {//doesnt work trying to make work for single player...dosent work
-            if (score < 70) {//placeholder for the moment can be changed to be affected by the atoms
-                JLabel WinnerLabel = new JLabel("Player 1 Wins!", SwingConstants.CENTER); //putting the score in the centre under title
-                WinnerLabel.setFont(new Font(WinnerLabel.getFont().getName(), Font.BOLD, 35));
-                WinnerLabelPanel.add(WinnerLabel, BorderLayout.NORTH);
-                topPanel.add(WinnerLabelPanel);
-            } else {
-                JLabel WinnerLabel = new JLabel("Player 2 Wins!", SwingConstants.CENTER); //putting the score in the centre under title
-                WinnerLabel.setFont(new Font(WinnerLabel.getFont().getName(), Font.BOLD, 35));
-                WinnerLabelPanel.add(WinnerLabel, BorderLayout.NORTH);
-                topPanel.add(WinnerLabelPanel);
+            if(isSinglePlayer) {
+                if (findWinner()){
+                    JLabel WinnerLabel = new JLabel("You Win!", SwingConstants.CENTER); //putting the score in the centre under title
+                    WinnerLabel.setFont(new Font(WinnerLabel.getFont().getName(), Font.BOLD, 55));
+                    WinnerLabelPanel.add(WinnerLabel, BorderLayout.NORTH);
+                    topPanel.add(WinnerLabelPanel);
+                }
+                else{
+                    JLabel WinnerLabel = new JLabel("You Lose!", SwingConstants.CENTER); //putting the score in the centre under title
+                    WinnerLabel.setFont(new Font(WinnerLabel.getFont().getName(), Font.BOLD, 55));
+                    WinnerLabelPanel.add(WinnerLabel, BorderLayout.NORTH);
+                    topPanel.add(WinnerLabelPanel);
+                }
+            }
+            else {
+                if (!findWinner()) {//winner if not all atoms found
+                    JLabel WinnerLabel = new JLabel("Player 1 Wins!", SwingConstants.CENTER); //putting the score in the centre under title
+                    WinnerLabel.setFont(new Font(WinnerLabel.getFont().getName(), Font.BOLD, 55));
+                    WinnerLabelPanel.add(WinnerLabel, BorderLayout.NORTH);
+                    topPanel.add(WinnerLabelPanel);
+                } else { //winner if  all atoms found
+                    JLabel WinnerLabel = new JLabel("Player 2 Wins!", SwingConstants.CENTER); //putting the score in the centre under title
+                    WinnerLabel.setFont(new Font(WinnerLabel.getFont().getName(), Font.BOLD, 55));
+                    WinnerLabelPanel.add(WinnerLabel, BorderLayout.NORTH);
+                    topPanel.add(WinnerLabelPanel);
+                }
             }
         }
 
@@ -156,12 +175,72 @@ public class TwoPlayer extends HexBoard {
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+
+        // Add action listener to ReplayButton
+        ReplayButton.addActionListener(e -> {
+//Broken??
+            switch (MainMenu.GameMode){
+                case "Single Player":
+                    SinglePlayer singlePlayerPanel = new SinglePlayer();
+                    frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
+                    frame.add(singlePlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+                    frame.validate(); //validates
+                    frame.repaint(); //painting
+
+                case "2 Player":
+                    TwoPlayer twoPlayerPanel = new TwoPlayer();
+                    frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
+                    frame.add(twoPlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+                    frame.validate(); //validates
+                    frame.repaint(); //painting
+
+
+                    break;
+                default:
+                     System.out.println("error");
+            }
+
+            frame.validate(); //validates
+            frame.repaint(); //painting
+        });
+
+        // Add action listener to MMButton (Main Menu)
+        MMButton.addActionListener(e -> {
+            MainMenu.displayMainMenu();
+            frame.dispose();
+        });
+
+        // Add action listener to ExitButton
+        ExitButton.addActionListener(e -> {
+            System.exit(0); // Exits the program
+        });
+    }
+
+
+    private boolean findWinner() {
+        // Check if Player 2 has guessed all atoms correctly.
+        for (Atom guess : playerTwoGuesses) {
+            boolean foundMatch = false;
+            for (Atom original : playerOneAtoms) {
+                if (original.getPosition().equals(guess.getPosition())) {
+                    foundMatch = true;
+                    break; // A matching atom is found, no need to check further
+                }
+            }
+            if (!foundMatch) {
+                // If even one guess is wrong, Player 1 wins
+                return false;
+            }
+        }
+        // If all guesses are correct, Player 2 wins
+        return true;
     }
 
     @Override
     protected void handleMouseClick(Point hexCoord, Point clickedPoint) {
         if (currentPlayer == 1) {
-            System.out.println("here");
+//            System.out.println("here");
             if (hexCoordinates.contains(hexCoord)) {//if click within board
                 Atom existingAtom = findAtomByAxial(playerOneAtoms, hexCoord);//try find atom in specific arrayList
                 if (existingAtom != null) {
@@ -286,6 +365,8 @@ public class TwoPlayer extends HexBoard {
                 }
                 //Correctly guessed atoms are already drawn in green so no need to redraw them here.
             }
+            MainMenu.frame.dispose();
+
             finishScreen();
         }
     }
