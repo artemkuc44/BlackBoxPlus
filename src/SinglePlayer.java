@@ -34,4 +34,7 @@ public class SinglePlayer extends TwoPlayer {
             super.handleMouseClick(hexCoord, clickedPoint);
         }
     }
+
+
+
 }

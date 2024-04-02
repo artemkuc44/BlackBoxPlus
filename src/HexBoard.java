@@ -32,7 +32,7 @@ public class HexBoard extends JPanel {
 
     private ArrayList<Ray> rays = new ArrayList<>();
 
-    public static final Point[] DIRECTIONS = new Point[] {//Directions array used to compute circular dependency
+    public static final Point[] DIRECTIONS = new Point[] {//Directions array used to compute circle of influence
             new Point(0, 1), new Point(0, -1), new Point(-1, 0),
             new Point(1, 0), new Point(-1, 1), new Point(1, -1)
     };
@@ -295,10 +295,11 @@ public class HexBoard extends JPanel {
         Path2D path = new Path2D.Double();
         hexCenter = axialToPixel(hexCenter.x,hexCenter.y);
 
-        // Calculate the vertices on the side from which the ray is coming
+        //Calculate the vertices on the side from which the ray is coming (depending on direction)
         Point vertex1 = new Point();
         Point vertex2 = new Point();
 
+        //length from centre of a hexagon to the mid-point of any side.
         double triangleHeight = HEX_SIZE * Math.sqrt(3) / 2;
 
         if (dir.equals(new Point(0, 1))) {
@@ -334,8 +335,8 @@ public class HexBoard extends JPanel {
         }
 
         path.moveTo(hexCenter.x, hexCenter.y); //Start from the center of the hexagon
-        path.lineTo(vertex1.x, vertex1.y); //First vertex on the hexagon side
-        path.lineTo(vertex2.x, vertex2.y); //Second vertex on the hexagon side
+        path.lineTo(vertex1.x, vertex1.y); //First vertex on the hexagon side(from which the ray is coming from)
+        path.lineTo(vertex2.x, vertex2.y); //Second vertex on the hexagon side(from which the ray is coming from)
         path.closePath(); //Close back to the center
 
         return path;

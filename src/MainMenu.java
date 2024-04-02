@@ -32,6 +32,10 @@ public class MainMenu {
         }
     }
 
+    public static String getGameMode() {
+        return GameMode;
+    }
+
     protected static void displayMainMenu(){
         frame = new JFrame("Blackbox +"); //title of the frame changes
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame

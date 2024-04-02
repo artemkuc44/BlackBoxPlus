@@ -179,34 +179,34 @@ public class TwoPlayer extends HexBoard {
 
         // Add action listener to ReplayButton
         ReplayButton.addActionListener(e -> {
+
+            MainMenu.frame.dispose();
+
 //Broken??
-            switch (MainMenu.GameMode){
-                case "Single Player":
-                    SinglePlayer singlePlayerPanel = new SinglePlayer();
-                    frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
-                    frame.add(singlePlayerPanel, BorderLayout.CENTER); //adds the hex panel.
-                    frame.validate(); //validates
-                    frame.repaint(); //painting
+            if(this instanceof SinglePlayer) {
+                SinglePlayer singlePlayerPanel = new SinglePlayer();
+                frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
+                frame.add(singlePlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+                frame.validate(); //validates
+                frame.repaint(); //painting
+            }else{
+                TwoPlayer twoPlayerPanel = new TwoPlayer();
+                frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
+                frame.add(twoPlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+                frame.validate(); //validates
+                frame.repaint(); //painting
 
-                case "2 Player":
-                    TwoPlayer twoPlayerPanel = new TwoPlayer();
-                    frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
-                    frame.add(twoPlayerPanel, BorderLayout.CENTER); //adds the hex panel.
-                    frame.validate(); //validates
-                    frame.repaint(); //painting
-
-
-                    break;
-                default:
-                     System.out.println("error");
             }
 
             frame.validate(); //validates
             frame.repaint(); //painting
+
         });
 
         // Add action listener to MMButton (Main Menu)
         MMButton.addActionListener(e -> {
+            MainMenu.frame.dispose();
+
             MainMenu.displayMainMenu();
             frame.dispose();
         });
@@ -365,9 +365,10 @@ public class TwoPlayer extends HexBoard {
                 }
                 //Correctly guessed atoms are already drawn in green so no need to redraw them here.
             }
-            MainMenu.frame.dispose();
 
             finishScreen();
+            //MainMenu.frame.dispose();
+
         }
     }
 }
