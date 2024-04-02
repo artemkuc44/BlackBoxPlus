@@ -15,10 +15,6 @@ import java.awt.geom.Path2D;
 import java.util.*;
 import java.util.HashMap;
 
-
-
-
-
 public class HexBoard extends JPanel {
     protected static final int HEX_SIZE = 40;//also known as the radius ie. 40 pixels from center to any given corner
     protected static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
@@ -365,6 +361,11 @@ public class HexBoard extends JPanel {
             for(Atom atom:atomsList){//traverse atom array
                 if(atom.getNeighbours().containsKey(ray.getEntryPoint())){//checks for deflection with circle of influence on border
                     ray.setExitPoint(ray.getEntryPoint());
+                    System.out.println(ray.getDirection());
+                    if(new Point(ray.getDirection().x + ray.getEntryPoint().x,ray.getDirection().y + ray.getEntryPoint().y).equals(atom.getPosition())){//checks if next hex in ray path contains atom
+                        ray.setType(1);//absorption
+                    }
+                    ray.setdirection(new Point(ray.getDirection().x*-1,ray.getDirection().y *-1));//stops from markers being drawn back to back
                     System.out.println("exit point" + ray.getExitPoint());
                     return;
                 }
@@ -382,7 +383,7 @@ public class HexBoard extends JPanel {
                     count++;
                 }
             }
-            if(ray.getDirection().equals(new Point(0,0)) && count == 1){//absorbtion
+            if(ray.getDirection().equals(new Point(0,0)) && count == 1){//absorbtion (directions cancel out)
                 ray.setExitPoint(currPoint);
                 ray.setType(1);
                 return;
@@ -395,9 +396,6 @@ public class HexBoard extends JPanel {
                     rayMovement.add(new Point(currPoint.x,currPoint.y));
                 }
             }
-
-
-
             currPoint.x += ray.getDirection().x;
             currPoint.y += ray.getDirection().y;
         }
