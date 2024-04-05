@@ -186,8 +186,11 @@ class unitTest {
 
         assertEquals(new Point(1,-5),ray48.getExitPoint());
     }
+
     //TODO check if can add same atom twice
     //TODO try enter ray not on border
+
+
 
 }
 

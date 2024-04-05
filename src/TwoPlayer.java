@@ -22,7 +22,6 @@ public class TwoPlayer extends HexBoard {
     private ArrayList<Ray> playerTwoRays = new ArrayList<>();
 
     boolean isSinglePlayer = false;
-
     protected JButton finishButton;
     protected JLabel scoreBoard;
     protected int score;
@@ -101,7 +100,7 @@ public class TwoPlayer extends HexBoard {
         topPanel.add(GameOverLabelPanel);
         topPanel.add(FinalScoreLabelPanel);
 
-        if(currentPlayer==2) {//doesnt work trying to make work for single player...dosent work
+        if(currentPlayer==2) {//doesnt work trying to make work for single player...doesnt work
             if(isSinglePlayer) {
                 if (findWinner()){
                     JLabel WinnerLabel = new JLabel("You Win!", SwingConstants.CENTER); //putting the score in the centre under title
@@ -243,7 +242,6 @@ public class TwoPlayer extends HexBoard {
     @Override
     protected void handleMouseClick(Point hexCoord, Point clickedPoint) {
         if (currentPlayer == 1) {
-//            System.out.println("here");
             if (hexCoordinates.contains(hexCoord)) {//if click within board
                 Atom existingAtom = findAtomByAxial(playerOneAtoms, hexCoord);//try find atom in specific arrayList
                 if (existingAtom != null) {
@@ -301,7 +299,6 @@ public class TwoPlayer extends HexBoard {
                 Point hex = atom.getPosition();
                 Point pixelPoint = axialToPixel(hex.x, hex.y); // Convert axial back to pixel for drawing
                 g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
-
             }
         }
         if (currentPlayer == 2) {
@@ -311,27 +308,15 @@ public class TwoPlayer extends HexBoard {
                 Point hex = atom.getPosition();
                 Point pixelPoint = axialToPixel(hex.x, hex.y); // Convert axial back to pixel for drawing
                 g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
-
             }
 
-            //draw rays
-//            for(Point point: rayMovement){
-//                Point point1 = axialToPixel(point.x, point.y); // Convert axial to pixel coordinates
-//                g2d.setColor(new Color(0, 255, 0, 75)); // Semi-transparent red for highlighting
-//                g2d.fill(createHexagon(point1.x, point1.y));
-//                g2d.setColor(Color.BLACK); // Reset color for drawing other elements
-//            }
 
             for (Ray ray : playerTwoRays) {
                 if (ray.getType() == 1) {
                     g2d.setColor(new Color(0, 0, 0));//black for absorbtion
-                    System.out.println(score);
-
                 }
                 else {
                     g2d.setColor(new Color(ray.getR(), ray.getG(), ray.getB()));//other non absorbed
-                    System.out.println(score);
-
                 }
                 g2d.fill(createMarker(ray.getEntryPoint(), ray.getEntryDirection()));
                 g2d.fill(createMarker(ray.getExitPoint(), new Point(ray.getDirection().x * -1, ray.getDirection().y * -1)));
@@ -355,9 +340,13 @@ public class TwoPlayer extends HexBoard {
 
                 //Draw the guess with the appropriate colour
                 g2d.setColor(matchFound ? Color.green : Color.red);
+                if(!matchFound){
+                    score -= 10;//reduce score by 10 for incorrect guesses
+                }
                 Point pixelPoint = axialToPixel(guess.getPosition().x, guess.getPosition().y);
                 g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
             }
+            scoreBoard.setText("Score: " + score);
 
             //Draw original atoms that were not guessed correctly
             for (Atom original : playerOneAtoms) {
@@ -368,7 +357,6 @@ public class TwoPlayer extends HexBoard {
                 }
                 //Correctly guessed atoms are already drawn in green so no need to redraw them here.
             }
-
             finishScreen();
             //MainMenu.frame.dispose();
 
