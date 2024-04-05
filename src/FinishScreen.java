@@ -2,7 +2,7 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 
-public class FinishScreen extends JFrame {
+public class FinishScreen extends JPanel {
     private int score;
     private int currentPlayer;
     private boolean isSinglePlayer;
@@ -21,7 +21,6 @@ public class FinishScreen extends JFrame {
         JFrame frame = new JFrame("BlackBox+"); // Corrected method name and title of the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
         frame.setSize(TwoPlayer.DISPLAY_WIDTH, TwoPlayer.DISPLAY_HEIGHT);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 600); // Adjust size as needed
 
         JPanel topPanel = new JPanel();
@@ -145,7 +144,6 @@ public class FinishScreen extends JFrame {
 
     private void goToMainMenu(JFrame frame) {
         MainMenu.frame.dispose();
-
         MainMenu.displayMainMenu();
         frame.dispose();
     }
@@ -168,5 +166,6 @@ public class FinishScreen extends JFrame {
         // If all guesses are correct, Player 2 wins
         return true;
     }
+
 
 }

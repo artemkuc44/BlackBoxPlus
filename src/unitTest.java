@@ -315,8 +315,9 @@ class unitTest {
     void testFinishActionConcludesGameAfterPlayerTwoFinishes() {
         TwoPlayer game = new TwoPlayer();
         game.currentPlayer = 2;
+        game.compare = true;
         game.finishAction();
-        assertTrue(game.finish, "The game should be marked as finished after player 2 finishes.");
+        assertTrue(game.endGame, "The game should be marked as finished after player 2 compares and ends game.");
     }
 
 
