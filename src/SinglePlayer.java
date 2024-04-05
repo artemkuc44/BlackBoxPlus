@@ -14,6 +14,8 @@ public class SinglePlayer extends TwoPlayer {
         super.isSinglePlayer = true;
     }
 
+
+
     private void randomlyAllocateAtoms() {
         Random random = new Random();
         while (playerOneAtoms.size() < MAX_ATOMS) {
