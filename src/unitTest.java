@@ -1,5 +1,6 @@
 package src;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -15,7 +16,8 @@ class unitTest {
     @BeforeEach
     void setUp() {
         hexGridPanel = new HexBoard();
-        hexGridPanel.setSize(800, 800); // Ensure the panel has dimensions for coordinate calculations
+        hexGridPanel.setSize(800, 800);
+        game = new TwoPlayer(); // Initialize your TwoPlayer game// Ensure the panel has dimensions for coordinate calculations
 
     }
 
@@ -189,6 +191,133 @@ class unitTest {
     //TODO check if can add same atom twice
     //TODO try enter ray not on border
 
+    @Nested
+    class RayTest {
+        private Ray ray;
+
+        @BeforeEach
+        void setUp() {
+            ray = new Ray(new Point(0, 0), new Point(1, 0));
+        }
+
+        @Test
+        void ValidDirection() { //checks valid direction
+            assertDoesNotThrow(() -> new Ray(new Point(5,0), new Point(0,1)));
+            assertDoesNotThrow(() -> new Ray(new Point(5,2), new Point(1,1)));
+            assertDoesNotThrow(() -> new Ray(new Point(1,7), new Point(1,0)));
+            assertDoesNotThrow(() -> new Ray(new Point(3,5), new Point(1,1)));
+        }
+
+        @Test
+        void InvalidDirection() { //checks invalid direction
+            assertThrows(IllegalArgumentException.class, () -> new Ray(new Point(0,0), new Point(2,0)));
+            assertThrows(IllegalArgumentException.class, () -> new Ray(new Point(0,0), new Point(4,2)));
+            assertThrows(IllegalArgumentException.class, () -> new Ray(new Point(0,0), new Point(12,0)));
+            assertThrows(IllegalArgumentException.class, () -> new Ray(new Point(0,0), new Point(2,1)));
+        }
+
+        @Test
+        void CheckDirection() {
+            assertDoesNotThrow(() -> ray.setdirection(new Point(0, -1)));
+            assertEquals(0, ray.getDirection().x);
+            assertEquals(-1, ray.getDirection().y);
+        }
+
+
+        @Test
+        void colorComponentsWithinRange() {
+            assertTrue(ray.getR() >= 0 && ray.getR() <= 255);
+            assertTrue(ray.getG() >= 0 && ray.getG() <= 255);
+            assertTrue(ray.getB() >= 0 && ray.getB() <= 255);
+        }
+
+        @Test
+        void setAndGetExitPoint() {
+            Point exitPoint = new Point(5, 5);
+            ray.setExitPoint(exitPoint);
+            assertEquals(exitPoint, ray.getExitPoint());
+        }
+
+        @Test
+        void typePropertyManagement() {
+            ray.setType(1);
+            assertEquals(1, ray.getType());
+        }
+    }
+
+    private TwoPlayer game;
+
+
+
+    @Test
+    void CorrectGuesses() {
+        // Setup - Player 1 places atoms
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(0, 1)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(1, 0)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(2, 1)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(2, 0)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(3, 1)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(3, 0)));
+
+        // Player 2 guesses
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(0, 1)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(1, 0)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(2, 1)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(2, 0)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(3, 1)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(3, 0)));
+
+        assertTrue(FinishScreen.findWinner(), "Player 2 wins if all guesses are correct.");
+    }
+
+    @Test
+    void IncorrectGuesses() {
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(0, 1)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(1, 0)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(2, 1)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(2, 0)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(3, 1)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(3, 0)));
+
+        // Player 2 guesses
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(0, 1)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(1, 0)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(2, 1)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(2, 0)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(3, 1)));
+        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(4, 0)));
+
+        assertFalse(FinishScreen.findWinner(), "Player 1 should win if Player 2 guesses incorrectly.");
+    }
+/*
+    @Test
+    void Player2NoGuesses() {
+        // Setup - Player 1 places atoms
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(0, 1)));
+        TwoPlayer.playerOneAtoms.add(new Atom(new Point(1, 0)));
+
+        // Player 2 makes no guesses
+        assertTrue(TwoPlayer.playerTwoGuesses.isEmpty(), "Player 2 has made no guesses.");
+
+        //assertFalse(game.findWinner(), "Player 1 should win if Player 2 makes no guesses."); //ask artjom will i even bother including this test.
+    }
+    */
+
+    @Test
+    void testFinishActionTransitionsFromPlayerOneToTwo() {
+        TwoPlayer game = new TwoPlayer();
+        game.currentPlayer = 1;
+        game.finishAction();
+        assertEquals(2, game.currentPlayer, "Should switch from player1 to player2.");
+    }
+
+    @Test
+    void testFinishActionConcludesGameAfterPlayerTwoFinishes() {
+        TwoPlayer game = new TwoPlayer();
+        game.currentPlayer = 2;
+        game.finishAction();
+        assertTrue(game.finish, "The game should be marked as finished after player 2 finishes.");
+    }
+
+
 }
-
-

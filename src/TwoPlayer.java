@@ -29,7 +29,7 @@ public class TwoPlayer extends HexBoard {
     protected int score;
 
 
-    private void finishAction() {
+    void finishAction() {
         if (currentPlayer == 1) {
             currentPlayer = 2;
             scoreBoard.setVisible(true);
