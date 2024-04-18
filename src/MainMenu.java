@@ -1,24 +1,40 @@
 package src;
+import org.junit.Rule;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 public class MainMenu {
-    private static final int DISPLAY_HEIGHT = 800;
-    private static final int DISPLAY_WIDTH = 800;
+
+    public static final int DISPLAY_HEIGHT = 800;
+    public static final int DISPLAY_WIDTH = 800;
     private static final int BUTTON_HEIGHT = 100;
     private static final int BUTTON_WIDTH = 200;
     protected static JFrame frame;
     protected static String GameMode;
+
+
     private static int player_1_score;
     private static int player_2_score;
 
     public static void setPlayer_1_score(int score){
         player_1_score = score;
     }
+
     public static void setPlayer_2_score(int score){
         player_2_score = score;
     }
+
+
+    protected static JLabel gameModeLabel = new JLabel("Select a Game Mode", SwingConstants.CENTER);
+
+    public static String getGameMode() {
+        return GameMode;
+    }
+
     protected static void displayMainMenu(){
         frame = new JFrame("Blackbox +"); //title of the frame changes
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
@@ -29,7 +45,9 @@ public class MainMenu {
         JLabel titleLabel = new JLabel("BLACK BOX +", SwingConstants.CENTER); //putting the title in the centre
         titleLabel.setFont(new Font(titleLabel.getFont().getName(), Font.BOLD, 50));
         titlePanel.add(titleLabel, BorderLayout.NORTH);
+
         JPanel mainMenuPanel = new JPanel(new GridBagLayout()); //creating panel for mm
+
         JButton sandboxButton = new JButton("Sandbox");
         JButton twoPlayerButton = new JButton("2 Player");
         JButton singlePlayerButton = new JButton("Single Player");
@@ -51,6 +69,7 @@ public class MainMenu {
         JPanel sandboxPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         sandboxPanel.add(sandboxButton);
         sandboxPanel.add(sandboxInfoButton);
+
 
         JPanel twoPlayerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         twoPlayerPanel.add(twoPlayerButton);
@@ -76,7 +95,7 @@ public class MainMenu {
         singlePlayerButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
 
         exitButton.setFont(new Font("Arial", Font.BOLD, 20));
-        exitButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT/2));
+        exitButton.setPreferredSize(new Dimension(BUTTON_WIDTH*3/2, BUTTON_HEIGHT/2));
 
         GridBagConstraints gbcGameModePanel = new GridBagConstraints();
         gbcGameModePanel.gridwidth = GridBagConstraints.REMAINDER;
@@ -97,45 +116,78 @@ public class MainMenu {
         frame.setLocationRelativeTo(null); //makes it so when launching, it launches in the middle of the screen.
         frame.setVisible(true); //makes the whole thing viewable.
 
-        //when start button is pressed...
-        sandboxButton.addActionListener(e -> {
-            frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
-            GameMode = "Sandbox";
-            Sandbox hexPanel = new Sandbox();
-            frame.add(hexPanel, BorderLayout.CENTER); //adds the hex panel.
-            frame.validate(); //validates
-            frame.repaint(); //painting
+
+        sandboxButton.addActionListener(new ActionListener() { //when start button is pressed...
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
+
+
+                Sandbox hexPanel = new Sandbox();
+
+
+                frame.add(hexPanel, BorderLayout.CENTER); //adds the hex panel.
+
+
+                frame.validate(); //validates
+                frame.repaint(); //painting
+            }
         });
-        twoPlayerButton.addActionListener(e -> {
-            frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
-            GameMode = "2 Player";
-            TwoPlayer twoPlayerGame1 = new TwoPlayer(1);
-            frame.add(twoPlayerGame1, BorderLayout.CENTER); //adds the hex panel.
-            frame.validate(); //validates
-            frame.repaint(); //painting
+
+        twoPlayerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
 
 
+                TwoPlayer twoPlayerGame1 = new TwoPlayer(1);
+
+
+
+                frame.add(twoPlayerGame1, BorderLayout.CENTER); //adds the hex panel.
+
+
+                frame.validate(); //validates
+                frame.repaint(); //painting
+
+
+            }
         });
 
-        singlePlayerButton.addActionListener(e -> {
-            frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
-            GameMode = "Single Player";
+        singlePlayerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
 
-            SinglePlayer singlePlayer = new SinglePlayer();
-            frame.add(singlePlayer, BorderLayout.CENTER); //adds the hex panel.
-            frame.validate(); //validates
-            frame.repaint(); //painting
 
+                SinglePlayer singlePlayer = new SinglePlayer();
+
+
+                frame.add(singlePlayer, BorderLayout.CENTER); //adds the hex panel.
+
+
+                frame.validate(); //validates
+                frame.repaint(); //painting
+
+            }
         });
+
         exitButton.addActionListener(e ->{System.exit(1);});
+
     }
+
     public static void restartTwoPlayerGame() {
         frame.getContentPane().removeAll(); // Remove all content
+
         TwoPlayer twoPlayerGame2 = new TwoPlayer(2);
         frame.add(twoPlayerGame2, BorderLayout.CENTER); // Adds the new game panel
+
         frame.validate(); // Validates the frame after changes
         frame.repaint(); // Repaints the frame to display the new content
     }
+
+
     public static void callFinishScreen(boolean isSinglePlayer){
 
         frame.getContentPane().removeAll(); // Remove all content
@@ -148,11 +200,15 @@ public class MainMenu {
 
     }
 
+
+
     private static JButton createRulesBtn() {
         JButton button = new JButton("Rules");
         button.setFont(new Font("Arial", Font.BOLD,14 ));
-        button.setPreferredSize(new Dimension(BUTTON_WIDTH/2, BUTTON_HEIGHT/2));
+        button.setPreferredSize(new Dimension(BUTTON_WIDTH/2, BUTTON_HEIGHT));
+        // Set a rounded border without painting the background
         button.setFocusPainted(false);
+        //button.setContentAreaFilled(false);
         return button;
     }
     public static void main(String[] args) {
@@ -176,7 +232,7 @@ public class MainMenu {
                         "The Rules:\nPlayer 1 places 6 atoms\nThe game commences and Player 2 has to find all 6 atoms by strategically placing rays around\nthe board to find the atoms\n\n" +
                         "The Winner:\nIt being a 2 player game there is two different ways of winning:\n •If player 1 places his atoms well and player 2's score falls below 70: player 1 wins \n•If player 2 finds all the atoms or his score remains above 100: Player 2 wins\n\n";
                 break;//TODO fix rules for single and 2 player
-                case "Single Player":
+            case "Single Player":
                 RuleSet = "The Single player mode will be the most popular for the people who want to master a game.\nThe CPU randomly place the atoms around the board and the player has to find the atoms.\n\n" +
                         "The Rules:Once game commences and the player has to find all 6 atoms by strategically\n placing rays around the board to find the atoms\n\n";
                 break;

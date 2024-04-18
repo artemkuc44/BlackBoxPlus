@@ -1,4 +1,5 @@
 package src;
+
 import javax.swing.*;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ public class FinishScreen extends JPanel {
     private void finishScreen() {
         JFrame frame = MainMenu.frame;
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(TwoPlayer.DISPLAY_WIDTH, TwoPlayer.DISPLAY_HEIGHT);
+        frame.setSize(MainMenu.DISPLAY_WIDTH, MainMenu.DISPLAY_HEIGHT);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.PAGE_AXIS));
@@ -30,14 +31,14 @@ public class FinishScreen extends JPanel {
         JLabel gameOverLabel = createLabel("Game Over", BIG_FONT);
         topPanel.add(gameOverLabel);
 
-        if (isSinglePlayer) {
+        if (!isSinglePlayer) {
             JLabel finalScoreLabel = createLabel("Final Scores: P1 - " + player1_score + " | P2 - " + player2_score, SMALL_FONT);
             topPanel.add(finalScoreLabel);
             JLabel winnerLabel = createLabel(determineWinnerText(), SMALL_FONT);
             topPanel.add(winnerLabel);
         }
         else{
-            JLabel finalScoreLabel = createLabel(  "Players score:" + player2_score, SMALL_FONT);
+            JLabel finalScoreLabel = createLabel(  determineWinnerText(), SMALL_FONT);
             topPanel.add(finalScoreLabel);
         }
 
@@ -93,7 +94,7 @@ public class FinishScreen extends JPanel {
         return button;
     }
     private String determineWinnerText() {
-        if (!isSinglePlayer) {
+        if (isSinglePlayer) {
             return "Your score is " + player2_score;
         } else {
             if (findWinner() == 1) {
@@ -135,15 +136,14 @@ public class FinishScreen extends JPanel {
         frame.dispose();
     }
     private int findWinner() {
-        if(player1_score > player2_score){
+        if(player1_score < player2_score){
             return 1;
         }
-        if(player2_score>player1_score){
+        if(player2_score<player1_score){
             return 2;
         }
-        else if(player1_score == player2_score){
+        else {
             return 0;//draw
         }
-        else return 3;
     }
 }

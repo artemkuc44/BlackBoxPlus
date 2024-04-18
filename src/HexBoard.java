@@ -1,4 +1,5 @@
 package src;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,20 +13,17 @@ import java.util.HashMap;
 public class HexBoard extends JPanel {
     protected static final int HEX_SIZE = 40;//also known as the radius ie. 40 pixels from center to any given corner
     protected static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
-    protected static int MAX_ATOMS = 6;//max number of atoms
-
+    protected static int MAX_ATOMS = 100;//max number of atoms
     protected ArrayList<Atom> atoms = new ArrayList<>();//array List of atoms placed
     public ArrayList<Point> hexCoordinates;//All internal hexagon coords
     protected ArrayList<Point> borderHex;//all external border hexagons
-
     protected boolean drawRayPaths = true; // Control flag
 
     protected ArrayList<Point> rayMovement = new ArrayList<>();//array of points crossed in rays path
 
-    private HashMap<Point,Point> rayMarkers = new HashMap<>();
-    protected JButton MainMenuButton;
+    private HashMap<Point,Point> rayMarkers = new HashMap<>();//stores ray markers <hex coord,direction>
 
-    protected ArrayList<Ray> rays = new ArrayList<>();
+    protected ArrayList<Ray> rays = new ArrayList<>();//stores rays
 
     public static final Point[] DIRECTIONS = new Point[] {//Directions array used to compute circle of influence
             new Point(0, 1), new Point(0, -1), new Point(-1, 0),
@@ -35,9 +33,10 @@ public class HexBoard extends JPanel {
 
 
     public HexBoard() {
+
         hexCoordinates = new ArrayList<>();//needed to track hexes within board
-        poulateHexArray();//populate the array^4
-        populateBorderHex();
+        poulateHexArray();//populate the array^
+        populateBorderHex();//populate the border hexagons array
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -45,7 +44,7 @@ public class HexBoard extends JPanel {
                 super.mouseClicked(e);
                 Point clickedPoint = e.getPoint(); //Gets pixel coord
                 Point hexCoord = pixelToAxial(clickedPoint.x, clickedPoint.y); //Convert to axial
-                handleMouseClick(hexCoord,clickedPoint);
+                handleMouseClick(hexCoord,clickedPoint);//process click
             }
         });
 
@@ -61,8 +60,7 @@ public class HexBoard extends JPanel {
             } else if (atoms.size() != MAX_ATOMS) {
                 //Atom doesn't exist create and add to arraylist;
                 Atom newAtom = new Atom(hexCoord);
-                atoms.add(newAtom);
-                //newAtom.updateNeighbours();
+                atoms.add(newAtom);//add to atoms array
             }
 
         }
@@ -70,6 +68,7 @@ public class HexBoard extends JPanel {
             //check ray start or exit point + dir (as can have 2 from one border hex)
             Ray existingRay = null;
             for (Ray ray : rays) {
+                //check if ray exists by comparing entry point + dir or by exit point + dir, (can remove ray from either side sandbox)
                 if ((ray.getEntryPoint().equals(hexCoord) && ray.getEntryDirection().equals(closestSide(clickedPoint)))
                         || (ray.getExitPoint().equals(hexCoord) && new Point(ray.getDirection().x*-1,ray.getDirection().y*-1).equals(closestSide(clickedPoint)))) {
                     existingRay = ray;
@@ -92,9 +91,9 @@ public class HexBoard extends JPanel {
     }
 
     public Point closestSide(Point clickedPoint){//returns direction of ray movement
-        double min = 10000;//needed to initialise to something
+        double min = 1000000000;//"max" val
         Point minPoint = clickedPoint;//needed to initialise to something
-        for(Point internalPoint:hexCoordinates){//for all hexCoordinates points (inefficient)//TODO make more efficient
+        for(Point internalPoint:hexCoordinates){//for all hexCoordinates points (inefficient)
             Point pixelInternal = axialToPixel(internalPoint.x, internalPoint.y);//convert to pixel(needed for distance)
             if(clickedPoint.distance(pixelInternal) < min){
                 min = clickedPoint.distance(pixelInternal);

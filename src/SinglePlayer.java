@@ -8,9 +8,11 @@ public class SinglePlayer extends TwoPlayer {
         super(2); // Call the superclass constructor
         currentPlayer = 2; // Set currentPlayer to 2 since Player 1's actions are automated
         randomlyAllocateAtoms(); // Randomly allocate atoms for Player 1
-        finishButton.setVisible(false); // Initially hide the finish button
+        button.setVisible(false); // Initially hide the finish button
         scoreBoard.setVisible(true);
         drawRayPaths = false;
+        setMaxAtoms(this.MAX_ATOMS);
+
     }
 
     private void randomlyAllocateAtoms() {
@@ -32,5 +34,12 @@ public class SinglePlayer extends TwoPlayer {
         if (currentPlayer == 2) {
             super.handleMouseClick(hexCoord, clickedPoint);
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        MainMenu.frame.setTitle("Single Player");
+
     }
 }

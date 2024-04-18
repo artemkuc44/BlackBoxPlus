@@ -9,105 +9,104 @@ import java.util.*;
 
 
 public class TwoPlayer extends HexBoard {
-    protected static final int DISPLAY_HEIGHT = 800;
-    protected static final int DISPLAY_WIDTH = 800;
-    int game_number;
-    boolean compare = false;
-    boolean endGame = false;
-    boolean scoreCalcluatedFlag = false;
+    protected final int MAX_ATOMS = 6;
+    int game_number;//needed for switch
+    boolean comparing = false;//flag to show comparing screen
+    boolean endGame = false;//flag to show game is finished
+    boolean scoreCalcluatedFlag = false;//flag so score only calculated once
     protected int currentPlayer; // 1 or 2 to indicate whose turn it is
-    protected static ArrayList<Atom> playerOneAtoms = new ArrayList<>();
-    protected static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();
-    ArrayList<Point> guessedCorrectly = new ArrayList<>();
-    private ArrayList<Ray> playerTwoRays = new ArrayList<>();
-    boolean isSinglePlayer = false;
-    //protected JButton CompareButton;
-    protected JButton finishButton;
-    protected JLabel scoreBoard;
-    protected int score;
+    protected static ArrayList<Atom> playerOneAtoms = new ArrayList<>();//player ones hidden atoms
+    protected static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();//player twos gussed atoms
 
+    ArrayList<Point> guessedCorrectly = new ArrayList<>();//atoms that have been guessed correctly
 
-
-    void finishAction() {
-        if (currentPlayer == 1) {
-            currentPlayer = 2;
-            scoreBoard.setVisible(true);
-            finishButton.setVisible(false);
-        }
-        else if(isSinglePlayer) {
-            MainMenu.callFinishScreen(true);
-        }
-        else if(isSinglePlayer){
-            System.out.println("End game pressed");
-            if(game_number == 1){
-                MainMenu.setPlayer_1_score(score);
-                MainMenu.restartTwoPlayerGame();
-            }
-            else{
-                MainMenu.setPlayer_2_score(score);
-                MainMenu.callFinishScreen(false);
-            }
-        }
-        else if(currentPlayer == 2 && compare){
-            MainMenu.callFinishScreen(true);
-
-        }else if (currentPlayer == 2) {
-            compare = true;
-        }
-        repaint();
-
-//        System.out.println("player one atoms" + game_number +playerOneAtoms);
-//        System.out.println("player two guesses" +game_number+ playerTwoGuesses);
-//        System.out.println("player two rays" +game_number+ playerTwoRays);
-
-    }
+    private ArrayList<Ray> playerTwoRays = new ArrayList<>();//player twos rays
+    protected JButton button;//button in top left, changes from hide->compare->end Game
+    protected JLabel scoreBoard;//scoreboard top right
+    protected int score;//player 2s score
 
     public TwoPlayer(int game_number) {
-        this.game_number = game_number;
-        currentPlayer = 1;
-        score = 100;
+        this.game_number = game_number;//set game number
+        currentPlayer = 1;//set current player(game starts with relative player 1)
+        score = 0;//score set to 0 initially
 
-        finishButton = new JButton("Finish");
-        finishButton.setBounds(25, 25, 100, 50);
-        finishButton.addActionListener(e -> finishAction());
+        button = new JButton("Hide");//button set to "hide" initially for when player is ready to hide atoms
+        button.setBounds(25, 25, 100, 50);
+        button.addActionListener(e -> finishAction());//assign to action listener
 
         this.setLayout(null); //Set layout to null for absolute positioning
-        this.add(finishButton);
-        finishButton.setVisible(false); //Initially hide the button
-        drawRayPaths = false;
+        this.add(button);//add button to disp
+        button.setVisible(false); //Initially hide the button
+        drawRayPaths = false;//ray paths would make game too easy
 
-        //Initialize the score board label with a border and background
-        scoreBoard = new JLabel("Score: " + score, SwingConstants.CENTER);
-        scoreBoard.setBounds(675, 25, 100, 50); // Adjust the size and position as needed
-        scoreBoard.setOpaque(true); // Allow background coloring
-        scoreBoard.setBackground(Color.LIGHT_GRAY); // Set background color
-        scoreBoard.setForeground(Color.BLACK); // Set text color
-
-        //Create a border
-        Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+        //initialize the score board label with a border and background
+        scoreBoard = new JLabel("Score: " + score, SwingConstants.CENTER);//create scoreboard top right
+        scoreBoard.setBounds(675, 25, 100, 50);
+        scoreBoard.setOpaque(true); //allow background coloring
+        scoreBoard.setBackground(Color.PINK); //aet background color
+        scoreBoard.setForeground(Color.BLACK); //set text color
+        Border border = BorderFactory.createLineBorder(Color.darkGray, 1);//create a border for scoreboard
         scoreBoard.setBorder(border);
-
-        //add to panel
-        this.add(scoreBoard);
+        this.add(scoreBoard);//add to panel
         scoreBoard.setVisible(false);
+
+        //clear arrays for previous games
+        playerOneAtoms.clear();
+        playerTwoGuesses.clear();
+        playerTwoRays.clear();
+
+        setMaxAtoms(this.MAX_ATOMS);
+
     }
+
+    void finishAction() {
+        try {//try catch block for error handling
+            //if current plyer is 1 and button pressed move to next player
+            if (currentPlayer == 1) {
+                currentPlayer = 2;
+                scoreBoard.setVisible(true);
+                button.setVisible(false);
+            } else if (currentPlayer == 2 && comparing) {//if curr player 2 and comparing and button pressed move to end game stge
+                endGame = true;
+                if (game_number == 1) {//if first game
+                    MainMenu.setPlayer_1_score(score);//store score in mainMenu
+                    MainMenu.restartTwoPlayerGame();//create and play another game with roles "switched"
+                } else {
+                    MainMenu.setPlayer_2_score(score);//if second game
+                    //single player plasy as if its 2nd game avoids restarting
+                    //if single player display finish screen
+                    if (this instanceof SinglePlayer) {
+                        MainMenu.callFinishScreen(true);//call finish screen single player true
+                    } else {
+                        MainMenu.callFinishScreen(false);//call finsih screen single player false
+                    }
+                }
+            } else if (currentPlayer == 2) {//if curr player 2 and btn pressed move to comparing stage
+                comparing = true;
+            }
+
+            repaint();//call repaint after every change
+        } catch (Exception e) {
+            e.printStackTrace(); //for debugging, print stack trace to standard error
+            JOptionPane.showMessageDialog(null, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
     @Override
     protected void handleMouseClick(Point hexCoord, Point clickedPoint) {
-        if (currentPlayer == 1 && !compare) {
-//            System.out.println("here");
+        if (currentPlayer == 1 && !comparing) {
             if (hexCoordinates.contains(hexCoord)) {//if click within board
-                Atom existingAtom = findAtomByAxial(playerOneAtoms, hexCoord);//try find atom in specific arrayList
-                if (existingAtom != null) {
+                Atom existingAtom = findAtomByAxial(playerOneAtoms, hexCoord);//try find atom in playerOneAtoms arrayList
+                if (existingAtom != null) {//if clicked and it exists, remove it
                     playerOneAtoms.remove(existingAtom);
                 } else if (playerOneAtoms.size() != MAX_ATOMS) {
-                    // Atom doesn't exist, create and add to arraylist;
+                    //atom doesn't exist, create and add to arraylist;
                     Atom newAtom = new Atom(hexCoord);
                     playerOneAtoms.add(newAtom);
-                    //newAtom.updateNeighbours();
                 }
             }
-        } else if (currentPlayer == 2 && !compare) {
+        } else if (currentPlayer == 2 && !comparing) {
             if (hexCoordinates.contains(hexCoord)) {//if click within board
                 Atom existingAtom = findAtomByAxial(playerTwoGuesses, hexCoord);//try find atom in specific arrayList
                 if (existingAtom != null) {
@@ -120,54 +119,57 @@ public class TwoPlayer extends HexBoard {
                     playerTwoGuesses.add(newAtom);
                     //newAtom.updateNeighbours();
                 }
-            } else if (borderHex.contains(hexCoord)) {
-                Ray ray = new Ray(hexCoord, closestSide(clickedPoint));
-                moveRay(ray, playerOneAtoms);
-                playerTwoRays.add(ray);
-                score--;
-                System.out.println("score upadated ray");
-                scoreBoard.setText("Score: " + score);
+            } else if (borderHex.contains(hexCoord)) {//if click along border
+                Ray ray = new Ray(hexCoord, closestSide(clickedPoint));//create new ray
+                moveRay(ray, playerOneAtoms);//move this ray based on the atoms in playerOneAtoms
+                playerTwoRays.add(ray);//add rays to playerTwoRays
+                score++;//inc score
+                scoreBoard.setText("Score: " + score);//update scoreboard text
             }
         }
-        //button logic -> runs after each mouse click
-        updateFinishButtonState();
-        repaint();
+        updatebuttonState();//button logic -> runs after each mouse click
+        repaint();//repaint rest of method
     }
 
-    private void updateFinishButtonState() {
-        if (compare) {//if in comparison mode button used to end game
-            finishButton.setText("End Game");
-            finishButton.setVisible(true);
+    private void updatebuttonState() {
+        if (comparing) {//if in comparison mode, button used to end game or switch depending on game_number
+            if(game_number == 1){
+                button.setText("Switch!");
+            }else{
+                button.setText("End Game");
+            }
+            button.setVisible(true);
         } else if (playerOneAtoms.size() == MAX_ATOMS && currentPlayer == 1) {//if player 1 and 6 atoms placed button used to "finish" and move on
-            finishButton.setText("Finish");
-            finishButton.setVisible(true);
-        } else if (playerTwoGuesses.size() == MAX_ATOMS && currentPlayer == 2) {//if player 2 placed 6 atoms button used to "compare"
-            finishButton.setText("Compare");
-            finishButton.setVisible(true);
+            button.setText("Hide");
+            button.setVisible(true);
+        } else if (playerTwoGuesses.size() == MAX_ATOMS && currentPlayer == 2) {//if player 2 placed 6 atoms button used to "compare" to hidden
+            button.setText("compare");
+            button.setVisible(true);
         } else {
-            finishButton.setVisible(false);
+            button.setVisible(false);
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // Call HexBoard's paintComponent to draw the base layer
+        super.paintComponent(g); //call HexBoard's paintComponent to draw the base layer
         Graphics2D g2d = (Graphics2D) g;
+        setTitle();//set text showing game details (game mode, current player, action)
         if (currentPlayer == 1) {
-            //draw atom (oval)
+            //draw atoms (circle)
             for (Atom atom : playerOneAtoms) {
-                Point hex = atom.getPosition();
+                Point hex = atom.getPosition();//get hex coords of atom
                 Point pixelPoint = axialToPixel(hex.x, hex.y); // Convert axial back to pixel for drawing
-                g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
+                g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);//create circle in center of hexagon
             }
         }
         if (currentPlayer == 2) {
-            //draw atom (oval)
+            //draw atom (circle)
             for (Atom atom : playerTwoGuesses) {
-                g2d.setColor(Color.blue);
-                Point hex = atom.getPosition();
-                Point pixelPoint = axialToPixel(hex.x, hex.y); // Convert axial back to pixel for drawing
-                g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
+                g2d.setColor(Color.blue);//guess atoms are blue
+                Point hex = atom.getPosition();//get hex coords of atom
+                Point pixelPoint = axialToPixel(hex.x, hex.y); //convert axial back to pixel for drawing
+                g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);//create circle in center of hexagon
             }
 
             for (Ray ray : playerTwoRays) {
@@ -177,11 +179,11 @@ public class TwoPlayer extends HexBoard {
                 else {
                     g2d.setColor(new Color(ray.getR(), ray.getG(), ray.getB()));//other non absorbed
                 }
-                g2d.fill(createMarker(ray.getEntryPoint(), ray.getEntryDirection()));
-                g2d.fill(createMarker(ray.getExitPoint(), new Point(ray.getDirection().x * -1, ray.getDirection().y * -1)));
+                g2d.fill(createMarker(ray.getEntryPoint(), ray.getEntryDirection()));//create entry point marker
+                g2d.fill(createMarker(ray.getExitPoint(), new Point(ray.getDirection().x * -1, ray.getDirection().y * -1)));//create exit point marker
             }
         }
-        if (compare) {
+        if (comparing) {
             //Check each guess against the original atoms
             for (Atom guess : playerTwoGuesses) {
                 boolean matchFound = false;
@@ -192,33 +194,46 @@ public class TwoPlayer extends HexBoard {
                         break; // Stop checking if a match is found
                     }
                 }
+
                 //Draw the guess with the appropriate colour
-                g2d.setColor(matchFound ? Color.green : Color.red);
-                Point pixelPoint = axialToPixel(guess.getPosition().x, guess.getPosition().y);
-                g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
+                g2d.setColor(matchFound ? Color.green : Color.red);//corrct : incorrect
+                Point pixelPoint = axialToPixel(guess.getPosition().x, guess.getPosition().y);//get hex coord of atom
+                g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);//draw filled circle
             }
-            if(!scoreCalcluatedFlag){
-                score -= (6-guessedCorrectly.size())*10;
-                scoreCalcluatedFlag = true;
-                System.out.println("score calculated atoms" + score);
+            if(!scoreCalcluatedFlag){//if score hasnt yet been calculated
+                score += (HexBoard.MAX_ATOMS-guessedCorrectly.size())*10;//calc score
+                scoreCalcluatedFlag = true;//mark as calculated
             }
             scoreBoard.setText("Score: " + score); // Update the score display
 
-            //Draw original atoms that were not guessed correctly
+            //Draw original atoms that were not found
             for (Atom original : playerOneAtoms) {
                 if (!guessedCorrectly.contains(original.getPosition())) {
-                    g2d.setColor(Color.black);
-                    Point pixelPoint = axialToPixel(original.getPosition().x, original.getPosition().y);
-                    g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
+                    g2d.setColor(Color.black);//unfound atoms stay black
+                    Point pixelPoint = axialToPixel(original.getPosition().x, original.getPosition().y);//get hex coord of atom pos
+                    g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);//draw filled circle
                 }
                 //Correctly guessed atoms are already drawn in green so no need to redraw them here.
             }
-            //Add end gamebutton
-            updateFinishButtonState();
-            finishButton.setVisible(true);
-        }
-        if(endGame){
-            updateFinishButtonState();
+            //Add end game button
+            updatebuttonState();
+            button.setVisible(true);
         }
     }
+
+    private void setTitle() {
+        String player = (currentPlayer == 1) ? "Player 1" : "Player 2";
+        String action = (currentPlayer == 1) ? "Hiding Atoms..." : "Finding Atoms...";
+
+        //if its the second game being player, the players titles are swapped(player 2 is now playing as player 1).
+        if (game_number == 2) {
+            player = (currentPlayer == 1) ? "Player 2" : "Player 1";
+        }
+
+        String title = "\t\tTwo player - " + player + " - " + action;
+        MainMenu.frame.setTitle(title);//set game info at top
+    }
+
+
+
 }

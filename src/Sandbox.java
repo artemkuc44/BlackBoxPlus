@@ -1,33 +1,34 @@
 package src;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+
 public class Sandbox extends HexBoard {
+
     public Sandbox(){
-        if(MainMenu.GameMode== "Sandbox") {
-            MainMenuButton = new JButton("Main Menu");
-            MainMenuButton.setBounds(25, 25, 100, 50);
-            MainMenuButton.addActionListener(e -> ReturnToMainMenu());
-            this.add(MainMenuButton);
-            this.setLayout(null);
-            MainMenuButton.setVisible(true); //Initially hide the button
-        }
-        setMaxAtoms(62);
+        JButton MainMenuButton = new JButton("Main Menu");
+        MainMenuButton.setBounds(25, 25, 100, 50);
+        MainMenuButton.addActionListener(e -> ReturnToMainMenu());
+        this.add(MainMenuButton);
+        this.setLayout(null);
+        MainMenuButton.setVisible(true);
     }
 
     private void ReturnToMainMenu() {
         MainMenu.frame.dispose();
-        setMaxAtoms(6);
         MainMenu.displayMainMenu();
     }
     @Override
     protected void handleMouseClick(Point hexCoord, Point clickedPoint) {
-        super.handleMouseClick(hexCoord, clickedPoint); // call HexBoard's method if it does initial needed operations
-        // Additional behavior specific to Sandbox can be added here
-        recalculateRays(); // Recalculate all rays with the new atoms configuration
-        repaint(); // Repaint after every mouse click to update the board
+        super.handleMouseClick(hexCoord, clickedPoint);
+        recalculateRays();
+        repaint();
     }
+
+
     protected void recalculateRays() {
+
         ArrayList<Ray> recalculatedRays = new ArrayList<>();
         rayMovement.clear();
         for (Ray ray : rays) {
@@ -35,11 +36,14 @@ public class Sandbox extends HexBoard {
             newRay.setR(ray.getR());
             newRay.setG(ray.getG());
             newRay.setB(ray.getB());
-            moveRay(newRay, atoms); // Recalculate ray movement based on the current atom configuration
-            recalculatedRays.add(newRay); // Store recalculated ray
+            moveRay(newRay, atoms);
+            recalculatedRays.add(newRay);
         }
         rays.clear();
-        rays = recalculatedRays; // Replace old rays with recalculated ones
+        rays = recalculatedRays;
 
     }
+
+
+
 }
