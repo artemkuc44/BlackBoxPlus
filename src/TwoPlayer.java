@@ -9,16 +9,17 @@ import java.util.*;
 
 
 public class TwoPlayer extends HexBoard {
-    protected static final int DISPLAY_HEIGHT = 600;
-    protected static final int DISPLAY_WIDTH = 600;
+    protected static final int DISPLAY_HEIGHT = 800;
+    protected static final int DISPLAY_WIDTH = 800;
     protected static final int BUTTON_HEIGHT = 75;
     private static final int BUTTON_WIDTH = 150;
-    public boolean compare = false;
-    public boolean endGame = false;
+    int game_number;
+    boolean compare = false;
+    boolean endGame = false;
     boolean scoreCalcluatedFlag = false;
-    public int currentPlayer; // 1 or 2 to indicate whose turn it is
-    public static ArrayList<Atom> playerOneAtoms = new ArrayList<>();
-    public static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();
+    protected int currentPlayer; // 1 or 2 to indicate whose turn it is
+    protected static ArrayList<Atom> playerOneAtoms = new ArrayList<>();
+    protected static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();
 
     ArrayList<Point> guessedCorrectly = new ArrayList<>();
 
@@ -32,22 +33,42 @@ public class TwoPlayer extends HexBoard {
     protected int score;
 
 
-    public void finishAction() {
+
+    void finishAction() {
         if (currentPlayer == 1) {
             currentPlayer = 2;
             scoreBoard.setVisible(true);
             finishButton.setVisible(false);
         }
+        else if(endGame){
+            System.out.println("End game pressed");
+            if(game_number == 1){
+                MainMenu.setPlayer_1_score(score);
+                MainMenu.restartTwoPlayerGame();
+            }
+            else{
+                MainMenu.setPlayer_2_score(score);
+                MainMenu.callFinishScreen(false);
+            }
+
+        }
         else if(currentPlayer == 2 && compare){
             endGame =true;
+
         }else if (currentPlayer == 2) {
             compare = true;
         }
+
         repaint();
+
+//        System.out.println("player one atoms" + game_number +playerOneAtoms);
+//        System.out.println("player two guesses" +game_number+ playerTwoGuesses);
+//        System.out.println("player two rays" +game_number+ playerTwoRays);
 
     }
 
-    public TwoPlayer() {
+    public TwoPlayer(int game_number) {
+        this.game_number = game_number;
         currentPlayer = 1;
         score = 100;
 
@@ -109,6 +130,7 @@ public class TwoPlayer extends HexBoard {
                 moveRay(ray, playerOneAtoms);
                 playerTwoRays.add(ray);
                 score--;
+                System.out.println("score upadated ray");
                 scoreBoard.setText("Score: " + score);
             }
         }
@@ -184,6 +206,7 @@ public class TwoPlayer extends HexBoard {
             if(!scoreCalcluatedFlag){
                 score -= (6-guessedCorrectly.size())*10;
                 scoreCalcluatedFlag = true;
+                System.out.println("score calculated atoms" + score);
             }
             scoreBoard.setText("Score: " + score); // Update the score display
 
@@ -201,20 +224,9 @@ public class TwoPlayer extends HexBoard {
             finishButton.setVisible(true);
         }
         if(endGame){
-            playerTwoGuesses.clear();
-            playerOneAtoms.clear();
-            callFinishScreen();
+            updateFinishButtonState();
+
         }
     }
 
-    private void callFinishScreen() {
-        FinishScreen FS = new FinishScreen(score, currentPlayer, isSinglePlayer);
-
-
-        MainMenu.frame.setContentPane(FS);
-        MainMenu.frame.revalidate();
-        MainMenu.frame.repaint();
-//        MainMenu.frame.dispose();
-//        MainMenu.displayMainMenu();
-    }
 }

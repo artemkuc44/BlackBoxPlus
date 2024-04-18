@@ -16,6 +16,19 @@ public class MainMenu {
     protected static JFrame frame;
     protected static String GameMode;
 
+
+    private static int player_1_score;
+    private static int player_2_score;
+
+    public static void setPlayer_1_score(int score){
+        player_1_score = score;
+    }
+
+    public static void setPlayer_2_score(int score){
+        player_2_score = score;
+    }
+
+
     protected static JLabel gameModeLabel = new JLabel("Select a Game Mode", SwingConstants.CENTER);
 
 
@@ -44,20 +57,13 @@ public class MainMenu {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
         frame.setSize(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
-
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         JLabel titleLabel = new JLabel("BLACK BOX +", SwingConstants.CENTER); //putting the title in the centre
         titleLabel.setFont(new Font(titleLabel.getFont().getName(), Font.BOLD, 50));
         titlePanel.add(titleLabel, BorderLayout.NORTH);
 
-
         JPanel mainMenuPanel = new JPanel(new GridBagLayout()); //creating panel for mm
-
-
-
-
-
 
         JButton sandboxButton = new JButton("Sandbox");
         JButton twoPlayerButton = new JButton("2 Player");
@@ -141,14 +147,17 @@ public class MainMenu {
                 frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
 
 
-                TwoPlayer twoPlayerPanel = new TwoPlayer();
+                TwoPlayer twoPlayerGame1 = new TwoPlayer(1);
 
 
-                frame.add(twoPlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+
+                frame.add(twoPlayerGame1, BorderLayout.CENTER); //adds the hex panel.
 
 
                 frame.validate(); //validates
                 frame.repaint(); //painting
+
+
             }
         });
 
@@ -166,9 +175,35 @@ public class MainMenu {
 
                 frame.validate(); //validates
                 frame.repaint(); //painting
+
             }
         });
     }
+
+    public static void restartTwoPlayerGame() {
+        frame.getContentPane().removeAll(); // Remove all content
+
+        TwoPlayer twoPlayerGame2 = new TwoPlayer(2);
+        frame.add(twoPlayerGame2, BorderLayout.CENTER); // Adds the new game panel
+
+        frame.validate(); // Validates the frame after changes
+        frame.repaint(); // Repaints the frame to display the new content
+    }
+
+
+    public static void callFinishScreen(boolean isSinglePlayer){
+
+        frame.getContentPane().removeAll(); // Remove all content
+
+        FinishScreen FS = new FinishScreen(player_1_score, player_2_score, isSinglePlayer);
+        frame.add(FS, BorderLayout.CENTER); // Adds the new game panel
+
+        frame.validate(); // Validates the frame after changes
+        frame.repaint(); // Repaints the frame to display the new content
+
+    }
+
+
 
     private static JButton createRulesBtn() {
         JButton button = new JButton("Rules");
@@ -180,7 +215,6 @@ public class MainMenu {
         return button;
     }
     public static void main(String[] args) {
-
         displayMainMenu();
     }
     private static void showRules(String gameMode) {

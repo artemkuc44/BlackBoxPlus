@@ -1,112 +1,108 @@
 package src;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 public class FinishScreen extends JPanel {
-    private int score;
-    private int currentPlayer;
+    private int player1_score;
+    private int player2_score;
     private boolean isSinglePlayer;
 
-    private static final int BUTTON_HEIGHT = 75;
+    private static final int BUTTON_HEIGHT = 40;
     private static final int BUTTON_WIDTH = 150;
+    private static final Color BACKGROUND_COLOR = new Color(50, 50, 50);
+    private static final Color BUTTON_COLOR = new Color(70, 130, 180);
+    private static final Color BUTTON_TEXT_COLOR = Color.WHITE;
+    private static final Color SCORE_COLOR = new Color(255, 215, 0);
+    private static final Color WINNER_COLOR = new Color(124, 252, 0);
+    private static final Color TEXT_COLOR = Color.WHITE;
+    private static final Font BIG_FONT = new Font("Arial", Font.BOLD, 90);
+    private static final Font MEDIUM_FONT = new Font("Arial", Font.BOLD, 55);
+    private static final Font SMALL_FONT = new Font("Arial", Font.BOLD, 30);
 
-    public FinishScreen(int score, int currentPlayer, boolean isSinglePlayer) {
-        this.score = score;
-        this.currentPlayer = currentPlayer;
+    public FinishScreen(int player1_score, int player2_score, boolean isSinglePlayer) {
+        this.player1_score = player1_score;
+        this.player2_score = player2_score;
         this.isSinglePlayer = isSinglePlayer;
+        System.out.println("Player 1 score: " + player1_score);
+        System.out.println("Player 2 score: " + player2_score);
+
         finishScreen();
     }
 
     private void finishScreen() {
-        JFrame frame = new JFrame("BlackBox+");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
+        JFrame frame = MainMenu.frame;
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(TwoPlayer.DISPLAY_WIDTH, TwoPlayer.DISPLAY_HEIGHT);
-        setSize(400, 600); // Adjust size as needed
+        frame.getContentPane().setBackground(BACKGROUND_COLOR);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.PAGE_AXIS));
+        topPanel.setBackground(BACKGROUND_COLOR);
 
-        JLabel gameOverLabel = new JLabel("Game Over", SwingConstants.CENTER);
-        gameOverLabel.setFont(new Font("Arial", Font.BOLD, 90));
-        gameOverLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        gameOverLabel.setMaximumSize(gameOverLabel.getPreferredSize());
+        JLabel gameOverLabel = createLabel("Game Over", BIG_FONT, TEXT_COLOR);
         topPanel.add(gameOverLabel);
 
-        JLabel finalScoreLabel = new JLabel("Final Score: " + score, SwingConstants.CENTER);
-        finalScoreLabel.setFont(new Font("Arial", Font.BOLD, 70));
-        finalScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        finalScoreLabel.setMaximumSize(finalScoreLabel.getPreferredSize());
+        JLabel finalScoreLabel = createLabel("Final Scores: P1 - " + player1_score + " | P2 - " + player2_score, SMALL_FONT, SCORE_COLOR);
         topPanel.add(finalScoreLabel);
 
-        if (currentPlayer == 2) {
-            JLabel winnerLabel = new JLabel(determineWinnerText(), SwingConstants.CENTER);
-            winnerLabel.setFont(new Font("Arial", Font.BOLD, 55));
-            winnerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            winnerLabel.setMaximumSize(winnerLabel.getPreferredSize());
+        if (!isSinglePlayer) {
+            JLabel winnerLabel = createLabel(determineWinnerText(), MEDIUM_FONT, WINNER_COLOR);
             topPanel.add(winnerLabel);
         }
 
-        JButton ReplayButton = new JButton("Replay");
-        JButton MMButton = new JButton("Main Menu");
-        JButton ExitButton = new JButton("Exit");
+        JButton replayButton = createButton("Replay");
+        JButton mmButton = createButton("Main Menu");
+        JButton exitButton = createButton("Exit");
 
-        ReplayButton.setFont(new Font("Arial", Font.BOLD, 20));
-        ReplayButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT)); //dimensions for button
-
-        // Customizing the rules button
-        MMButton.setFont(new Font("Arial", Font.BOLD, 20));
-        MMButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-
-        // Customizing the 2 Player button
-        ExitButton.setFont(new Font("Arial", Font.BOLD, 20));
-        ExitButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-
-
-        JPanel finishScreenPanel = new JPanel(new GridBagLayout());
-
-        GridBagConstraints gbcReplay = new GridBagConstraints(); //css basically for starting button
-        gbcReplay.gridwidth = GridBagConstraints.REMAINDER; //skips line
-        gbcReplay.fill = GridBagConstraints.HORIZONTAL;
-        gbcReplay.insets = new Insets(0, 0, 20, 0); //padding for where the button is.
-        gbcReplay.anchor = GridBagConstraints.PAGE_END; //ending the css
-
-        GridBagConstraints gbcMM = new GridBagConstraints();
-        gbcMM.gridwidth = GridBagConstraints.REMAINDER;
-        gbcMM.fill = GridBagConstraints.HORIZONTAL;
-        gbcMM.insets = new Insets(10, 0, 10, 0);
-
-        GridBagConstraints gbcExit = new GridBagConstraints();
-        gbcExit.gridwidth = GridBagConstraints.REMAINDER;
-        gbcExit.fill = GridBagConstraints.HORIZONTAL;
-        gbcExit.insets = new Insets(20, 0, 10, 0);
-
-        //adding the buttons and their css to main menu panel.
-        finishScreenPanel.add(ReplayButton, gbcReplay);
-        finishScreenPanel.add(MMButton, gbcMM); // Adding the new button
-        finishScreenPanel.add(ExitButton, gbcExit);
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setBackground(BACKGROUND_COLOR);
+        buttonPanel.add(replayButton);
+        buttonPanel.add(mmButton);
+        buttonPanel.add(exitButton);
 
         frame.setLayout(new BorderLayout());
-        frame.add(topPanel, BorderLayout.NORTH); // Add the northPanel with all the message labels to the north
-        frame.add(finishScreenPanel, BorderLayout.SOUTH); // Add the FinishScreenPanel with buttons to the south
+        frame.add(topPanel, BorderLayout.CENTER);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-
         // Add ActionListeners
-        ReplayButton.addActionListener(e ->
-                replayGame(frame));
-        MMButton.addActionListener(e ->
-                goToMainMenu(frame));
-        ExitButton.addActionListener(e ->
-                System.exit(0));
+        replayButton.addActionListener(e -> replayGame(frame));
+        mmButton.addActionListener(e -> goToMainMenu(frame));
+        exitButton.addActionListener(e -> System.exit(0));
+    }
+
+    private JLabel createLabel(String text, Font font, Color color) {
+        JLabel label = new JLabel(text, SwingConstants.CENTER);
+        label.setFont(font);
+        label.setForeground(color);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return label;
+    }
+
+    private JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setFont(SMALL_FONT);
+        button.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        button.setBackground(BUTTON_COLOR);
+        button.setForeground(BUTTON_TEXT_COLOR);
+        button.setBorder(new RoundedBorder(10));
+        return button;
     }
 
     private String determineWinnerText() {
         if (isSinglePlayer) {
-            return findWinner() ? "You Win!" : "You Lose!";
+            return "Your score is " + player2_score;
         } else {
-            return findWinner() ? "Player 2 Wins!" : "Player 1 Wins!";
+            if (findWinner() == 1) {
+                return "Player 1 wins! Score: " + player1_score;
+            } else if (findWinner() == 2) {
+                return "Player 2 wins! Score: " + player2_score;
+            } else {
+                return "It's a draw!";
+            }
         }
     }
 
@@ -126,7 +122,7 @@ public class FinishScreen extends JPanel {
             frame.repaint(); //painting
         }else{
             MainMenu.frame.dispose();
-            TwoPlayer twoPlayerPanel = new TwoPlayer();
+            TwoPlayer twoPlayerPanel = new TwoPlayer(1);
             frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
             frame.setSize(800,800);
             frame.setLocationRelativeTo(null); //makes it so when launching, it launches in the middle of the screen.
@@ -148,24 +144,37 @@ public class FinishScreen extends JPanel {
         frame.dispose();
     }
 
-    public static boolean findWinner() {
-        // Check if Player 2 has guessed all atoms correctly.
-        for (Atom guess : TwoPlayer.playerTwoGuesses) {
-            boolean foundMatch = false;
-            for (Atom original : TwoPlayer.playerOneAtoms) {
-                if (original.getPosition().equals(guess.getPosition())) {
-                    foundMatch = true;
-                    break; // A matching atom is found, no need to check further
-                }
-            }
-            if (!foundMatch) {
-                // If even one guess is wrong, Player 1 wins
-                return false;
-            }
+    private int findWinner() {
+        if(player1_score > player2_score){
+            return 1;
         }
-        // If all guesses are correct, Player 2 wins
-        return true;
+        if(player2_score>player1_score){
+            return 2;
+        }
+        else if(player1_score == player2_score){
+            return 0;//draw
+        }
+        else return 3;
     }
 
 
+    class RoundedBorder implements Border {
+        private int radius;
+
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+        public Insets getBorderInsets(Component c) {
+            return new Insets(this.radius, this.radius, this.radius, this.radius);
+        }
+
+        public boolean isBorderOpaque() {
+            return false;
+        }
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
+    }
 }

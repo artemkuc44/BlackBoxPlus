@@ -1,10 +1,11 @@
 package src;
+
 import java.awt.*;
 import java.util.Random;
 
 public class SinglePlayer extends TwoPlayer {
     public SinglePlayer() {
-        super(); // Call the superclass constructor
+        super(2); // Call the superclass constructor
         currentPlayer = 2; // Set currentPlayer to 2 since Player 1's actions are automated
         randomlyAllocateAtoms(); // Randomly allocate atoms for Player 1
         finishButton.setVisible(false); // Initially hide the finish button
