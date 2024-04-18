@@ -1,5 +1,4 @@
 package src;
-
 import java.awt.*;
 import java.util.Random;
 
@@ -11,10 +10,7 @@ public class SinglePlayer extends TwoPlayer {
         finishButton.setVisible(false); // Initially hide the finish button
         scoreBoard.setVisible(true);
         drawRayPaths = false;
-        super.isSinglePlayer = true;
     }
-
-
 
     private void randomlyAllocateAtoms() {
         Random random = new Random();
@@ -36,7 +32,4 @@ public class SinglePlayer extends TwoPlayer {
             super.handleMouseClick(hexCoord, clickedPoint);
         }
     }
-
-
-
 }

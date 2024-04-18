@@ -10,6 +10,9 @@ public class Atom {
     private final HashMap<Point,Point> neighbours;
 
     public Atom(Point position) {
+        if (position == null) {
+            throw new IllegalArgumentException("Position cannot be null");
+        }
         this.position = position;
         this.neighbours = new HashMap<>();
         updateNeighbours();
@@ -20,6 +23,9 @@ public class Atom {
     }
 
     public void addNeighbour(Point neighbour,Point direction) {
+        if (neighbour == null || direction == null) {
+            throw new IllegalArgumentException("Neither neighbour nor direction can be null");
+        }
         if (!neighbours.containsKey(neighbour)) {
             neighbours.put(neighbour, direction);
         }

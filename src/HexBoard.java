@@ -1,10 +1,5 @@
-//TODO diagram 3 ray 41, currently ray markers display on border opposite eachother, needs fixing
-//TODO also if atom near border similarly to ^, and ray is sent directly at it the effect is the same^, probably should be absorbed
-//TODO ray return to same point is treated normally, should it be specific colour?
-//TODO implement calculate score
-//TODO switch players plcer/guesser +  store score rescpectively
-//TODO need alot more unit tests
 package src;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,7 +13,7 @@ import java.util.HashMap;
 public class HexBoard extends JPanel {
     protected static final int HEX_SIZE = 40;//also known as the radius ie. 40 pixels from center to any given corner
     protected static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
-    protected static final int MAX_ATOMS = 6;//max number of atoms
+    protected static int MAX_ATOMS = 6;//max number of atoms
 
     protected ArrayList<Atom> atoms = new ArrayList<>();//array List of atoms placed
     public ArrayList<Point> hexCoordinates;//All internal hexagon coords
@@ -28,9 +23,9 @@ public class HexBoard extends JPanel {
 
     protected ArrayList<Point> rayMovement = new ArrayList<>();//array of points crossed in rays path
 
-    //private HashMap<Point,Point> rayMarkers = new HashMap<>();
+    private HashMap<Point,Point> rayMarkers = new HashMap<>();
 
-    private ArrayList<Ray> rays = new ArrayList<>();
+    protected ArrayList<Ray> rays = new ArrayList<>();
 
     public static final Point[] DIRECTIONS = new Point[] {//Directions array used to compute circle of influence
             new Point(0, 1), new Point(0, -1), new Point(-1, 0),
@@ -72,17 +67,33 @@ public class HexBoard extends JPanel {
             }
 
         }
-        else if (borderHex.contains(hexCoord)) {
-            Ray ray = new Ray(hexCoord, closestSide(clickedPoint));
-            moveRay(ray,atoms);
-            rays.add(ray);
+        if (borderHex.contains(hexCoord)) {
+            //check ray start or exit point + dir (as can have 2 from one border hex)
+            Ray existingRay = null;
+            for (Ray ray : rays) {
+                if ((ray.getEntryPoint().equals(hexCoord) && ray.getEntryDirection().equals(closestSide(clickedPoint)))
+                        || (ray.getExitPoint().equals(hexCoord) && new Point(ray.getDirection().x*-1,ray.getDirection().y*-1).equals(closestSide(clickedPoint)))) {
+                    existingRay = ray;
+                    break;
+                }
+            }
+            if (existingRay != null) {
+                //remove + updte marker
+                rays.remove(existingRay);
+                rayMarkers.remove(existingRay.getEntryPoint());
+            } else {
+                //create
+                Ray newRay = new Ray(hexCoord, closestSide(clickedPoint));
+                moveRay(newRay, atoms);
+                rays.add(newRay);
+                rayMarkers.put(newRay.getEntryPoint(), newRay.getEntryDirection());
+            }
         }
-
         repaint(); // Repaint after every mouse click
     }
 
     public Point closestSide(Point clickedPoint){//returns direction of ray movement
-        double min = 1000;//needed to initialise to something
+        double min = 10000;//needed to initialise to something
         Point minPoint = clickedPoint;//needed to initialise to something
         for(Point internalPoint:hexCoordinates){//for all hexCoordinates points (inefficient)//TODO make more efficient
             Point pixelInternal = axialToPixel(internalPoint.x, internalPoint.y);//convert to pixel(needed for distance)
@@ -138,6 +149,7 @@ public class HexBoard extends JPanel {
         }
     }
 
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -165,8 +177,6 @@ public class HexBoard extends JPanel {
                 Path2D hexagon = createHexagon(point.x, point.y);
                 g2d.draw(hexagon);
                 Point newPoint = new Point(q,r);
-
-
 
                 if(borderHex.contains(newPoint)){
                     g2d.setColor(new Color(0, 0, 0,75)); // Semi-transparent red for highlighting
@@ -219,36 +229,13 @@ public class HexBoard extends JPanel {
 
 
         for(Ray ray:rays){
-            if(ray.getType() == 1){
-                g2d.setColor(new Color(0,0,0));//black for absorbtion
-            }
-            else{
-                g2d.setColor(new Color(ray.getR(),ray.getG(),ray.getB()));//other non absorbed
-            }
+            if(ray.getType() == 1) g2d.setColor(new Color(0, 0, 0));//black for absorbtion
+
+            else g2d.setColor(new Color(ray.getR(), ray.getG(), ray.getB()));//other non-absorbed
+
             g2d.fill(createMarker(ray.getEntryPoint(),ray.getEntryDirection()));
             g2d.fill(createMarker(ray.getExitPoint(),new Point(ray.getDirection().x *-1,ray.getDirection().y*-1)));
         }
-//        // Create the marker path
-//        g2d.fill(createMarker(new Point(5,0), new Point(-1,0)));
-//        Path2D marker2 = createMarker(new Point(4,1), new Point(0,-1));
-//        Path2D marker3 = createMarker(new Point(5,-1), new Point(-1,1));
-//        Path2D marker4 = createMarker(new Point(4,-5), new Point(0,1));
-//        Path2D marker5 = createMarker(new Point(-5,0), new Point(1,0));
-//        Path2D marker6 = createMarker(new Point(-5,3), new Point(1,-1));
-//
-//
-//
-//        // Draw the marker
-//        //g2d.draw(marker);
-//        g2d.draw(marker2);
-//        g2d.draw(marker3);
-//        g2d.draw(marker4);
-//        g2d.draw(marker5);
-//        g2d.draw(marker6);
-
-
-
-
     }
 
     protected Point axialToPixel(int q,int r){
@@ -362,12 +349,10 @@ public class HexBoard extends JPanel {
             for(Atom atom:atomsList){//traverse atom array
                 if(atom.getNeighbours().containsKey(ray.getEntryPoint())){//checks for deflection with circle of influence on border
                     ray.setExitPoint(ray.getEntryPoint());
-                    System.out.println(ray.getDirection());
                     if(new Point(ray.getDirection().x + ray.getEntryPoint().x,ray.getDirection().y + ray.getEntryPoint().y).equals(atom.getPosition())){//checks if next hex in ray path contains atom
                         ray.setType(1);//absorption
                     }
                     ray.setdirection(new Point(ray.getDirection().x*-1,ray.getDirection().y *-1));//stops from markers being drawn back to back
-                    System.out.println("exit point" + ray.getExitPoint());
                     return;
                 }
                 else if(atom.getNeighbours().containsKey(currPoint)){
@@ -375,12 +360,6 @@ public class HexBoard extends JPanel {
                     Point neighbourDirection = atom.getNeighbours().get(currPoint);
                     // Add directions
                     ray.setdirection(new Point(ray.getDirection().x + neighbourDirection.x, ray.getDirection().y + neighbourDirection.y));
-                    System.out.println("\n");
-
-                    System.out.println("current point " + currPoint);
-
-                    System.out.println("Ray direction " + ray.getDirection());
-                    System.out.println("\n");
                     count++;
                 }
             }
@@ -391,11 +370,12 @@ public class HexBoard extends JPanel {
             }
             if(drawRayPaths){
                 //for now to be able to remove rays + ray markers for testing
-                if(rayMovement.contains(currPoint)){
-                    rayMovement.remove(currPoint);
-                }else{
-                    rayMovement.add(new Point(currPoint.x,currPoint.y));
-                }
+//                if(rayMovement.contains(currPoint)){
+//                    rayMovement.remove(currPoint);
+//                }else{
+//                    rayMovement.add(new Point(currPoint.x,currPoint.y));
+//                }
+                rayMovement.add(new Point(currPoint.x,currPoint.y));
             }
             currPoint.x += ray.getDirection().x;
             currPoint.y += ray.getDirection().y;
@@ -405,53 +385,10 @@ public class HexBoard extends JPanel {
         ray.setExitPoint(currPoint);
         repaint();
 
-        System.out.println("exit point" + ray.getExitPoint());
-
     }
 
-
-
-//    public static JFrame initialiseFrame(){
-//        JFrame frame = new JFrame();
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(800, 800);
-//        JLabel titleLabel = new JLabel("  BLACK BOX +");
-//        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-//        Font titleFont = titleLabel.getFont();
-//        titleLabel.setFont(titleFont.deriveFont(Font.BOLD, 50f));
-//        frame.add(titleLabel, BorderLayout.NORTH);
-//
-//        frame.setVisible(true);
-//        return frame;
-//    }
-
-
-
-    public static void main(String[] args) {
-//
-//        JFrame frame = new JFrame();
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(800, 800);
-//        JLabel titleLabel = new JLabel("  BLACK BOX +");
-//        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-//        Font titleFont = titleLabel.getFont();
-//        titleLabel.setFont(titleFont.deriveFont(Font.BOLD, 50f));
-//        frame.add(titleLabel, BorderLayout.NORTH);
-//
-//        frame.setVisible(true);
-//
-//        HexBoard hex = new HexBoard();
-//        frame.add(hex);
-
-
-
-        //hex.inputRay();
-        //hex.printHexagonCoordinates();
-
-        //System.out.println(hex.borderHex);
-
+    public void setMaxAtoms(int maxAtoms){
+        MAX_ATOMS = maxAtoms;
     }
-
-
 
 }

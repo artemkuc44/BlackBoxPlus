@@ -1,4 +1,5 @@
 package src;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -80,5 +81,17 @@ public class Ray{
     }
     public int getB(){
         return b;
+    }
+
+    public void setR(int r) {
+        this.r = r;
+    }
+
+    public void setG(int g) {
+        this.g = g;
+    }
+
+    public void setB(int b) {
+        this.b = b;
     }
 }

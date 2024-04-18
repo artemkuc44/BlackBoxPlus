@@ -18,7 +18,7 @@ public class FinishScreen extends JPanel {
     }
 
     private void finishScreen() {
-        JFrame frame = new JFrame("BlackBox+"); // Corrected method name and title of the frame
+        JFrame frame = new JFrame("BlackBox+");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //just about closing frame
         frame.setSize(TwoPlayer.DISPLAY_WIDTH, TwoPlayer.DISPLAY_HEIGHT);
         setSize(400, 600); // Adjust size as needed

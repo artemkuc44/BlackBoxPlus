@@ -1,7 +1,5 @@
 package src;
 
-import Hexagon.Main;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -17,9 +15,13 @@ public class TwoPlayer extends HexBoard {
     private static final int BUTTON_WIDTH = 150;
     boolean compare = false;
     boolean endGame = false;
+    boolean scoreCalcluatedFlag = false;
     protected int currentPlayer; // 1 or 2 to indicate whose turn it is
     protected static ArrayList<Atom> playerOneAtoms = new ArrayList<>();
     protected static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();
+
+    ArrayList<Point> guessedCorrectly = new ArrayList<>();
+
     private ArrayList<Ray> playerTwoRays = new ArrayList<>();
 
     boolean isSinglePlayer = false;
@@ -76,7 +78,7 @@ public class TwoPlayer extends HexBoard {
 
     @Override
     protected void handleMouseClick(Point hexCoord, Point clickedPoint) {
-        if (currentPlayer == 1) {
+        if (currentPlayer == 1 && !compare) {
 //            System.out.println("here");
             if (hexCoordinates.contains(hexCoord)) {//if click within board
                 Atom existingAtom = findAtomByAxial(playerOneAtoms, hexCoord);//try find atom in specific arrayList
@@ -88,9 +90,8 @@ public class TwoPlayer extends HexBoard {
                     playerOneAtoms.add(newAtom);
                     //newAtom.updateNeighbours();
                 }
-
             }
-        } else if (currentPlayer == 2) {
+        } else if (currentPlayer == 2 && !compare) {
             if (hexCoordinates.contains(hexCoord)) {//if click within board
                 Atom existingAtom = findAtomByAxial(playerTwoGuesses, hexCoord);//try find atom in specific arrayList
                 if (existingAtom != null) {
@@ -110,7 +111,6 @@ public class TwoPlayer extends HexBoard {
                 score--;
                 scoreBoard.setText("Score: " + score);
             }
-
         }
         //button logic -> runs after each mouse click
         updateFinishButtonState();
@@ -165,8 +165,6 @@ public class TwoPlayer extends HexBoard {
             }
         }
         if (compare) {
-            ArrayList<Point> guessedCorrectly = new ArrayList<>();
-
             //Check each guess against the original atoms
             for (Atom guess : playerTwoGuesses) {
                 boolean matchFound = false;
@@ -183,7 +181,10 @@ public class TwoPlayer extends HexBoard {
                 Point pixelPoint = axialToPixel(guess.getPosition().x, guess.getPosition().y);
                 g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);
             }
-            score -= (6-guessedCorrectly.size())*10;
+            if(!scoreCalcluatedFlag){
+                score -= (6-guessedCorrectly.size())*10;
+                scoreCalcluatedFlag = true;
+            }
             scoreBoard.setText("Score: " + score); // Update the score display
 
             //Draw original atoms that were not guessed correctly
@@ -208,6 +209,11 @@ public class TwoPlayer extends HexBoard {
 
     private void callFinishScreen() {
         FinishScreen FS = new FinishScreen(score, currentPlayer, isSinglePlayer);
+
+
+        MainMenu.frame.setContentPane(FS);
+        MainMenu.frame.revalidate();
+        MainMenu.frame.repaint();
 //        MainMenu.frame.dispose();
 //        MainMenu.displayMainMenu();
     }
