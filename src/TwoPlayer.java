@@ -13,12 +13,12 @@ public class TwoPlayer extends HexBoard {
     protected static final int DISPLAY_WIDTH = 600;
     protected static final int BUTTON_HEIGHT = 75;
     private static final int BUTTON_WIDTH = 150;
-    boolean compare = false;
-    boolean endGame = false;
+    public boolean compare = false;
+    public boolean endGame = false;
     boolean scoreCalcluatedFlag = false;
-    protected int currentPlayer; // 1 or 2 to indicate whose turn it is
-    protected static ArrayList<Atom> playerOneAtoms = new ArrayList<>();
-    protected static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();
+    public int currentPlayer; // 1 or 2 to indicate whose turn it is
+    public static ArrayList<Atom> playerOneAtoms = new ArrayList<>();
+    public static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();
 
     ArrayList<Point> guessedCorrectly = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class TwoPlayer extends HexBoard {
     protected int score;
 
 
-    void finishAction() {
+    public void finishAction() {
         if (currentPlayer == 1) {
             currentPlayer = 2;
             scoreBoard.setVisible(true);

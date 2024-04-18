@@ -148,7 +148,7 @@ public class FinishScreen extends JPanel {
         frame.dispose();
     }
 
-    static boolean findWinner() {
+    public static boolean findWinner() {
         // Check if Player 2 has guessed all atoms correctly.
         for (Atom guess : TwoPlayer.playerTwoGuesses) {
             boolean foundMatch = false;

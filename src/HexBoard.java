@@ -15,7 +15,7 @@ public class HexBoard extends JPanel {
     protected static final int DIAMETER_HEXAGONS = 9;//number of internal hexagons down middle
     protected static int MAX_ATOMS = 6;//max number of atoms
 
-    protected ArrayList<Atom> atoms = new ArrayList<>();//array List of atoms placed
+    public ArrayList<Atom> atoms = new ArrayList<>();//array List of atoms placed
     public ArrayList<Point> hexCoordinates;//All internal hexagon coords
     protected ArrayList<Point> borderHex;//all external border hexagons
 
@@ -249,7 +249,7 @@ public class HexBoard extends JPanel {
 
     }
 
-    Point pixelToAxial(int x, int y) {
+    public Point pixelToAxial(int x, int y) {
         double q;
         double r;
 
