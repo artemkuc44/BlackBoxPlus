@@ -39,31 +39,49 @@ public class FinishScreen extends JPanel {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.PAGE_AXIS));
         topPanel.setBackground(BACKGROUND_COLOR);
+        topPanel.add(Box.createVerticalGlue()); // Pushes everything to the center
 
         JLabel gameOverLabel = createLabel("Game Over", BIG_FONT, TEXT_COLOR);
+        gameOverLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         topPanel.add(gameOverLabel);
 
-        JLabel finalScoreLabel = createLabel("Final Scores: P1 - " + player1_score + " | P2 - " + player2_score, SMALL_FONT, SCORE_COLOR);
-        topPanel.add(finalScoreLabel);
+        JLabel scoreLabel;
+        if (!isSinglePlayer) {
+            scoreLabel = createLabel("Final Scores: P1 - " + player1_score + " | P2 - " + player2_score, SMALL_FONT, SCORE_COLOR);
+        } else {
+            scoreLabel = createLabel("Score: " + player2_score, MEDIUM_FONT, SCORE_COLOR);
+        }
+        scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        topPanel.add(scoreLabel);
 
         if (!isSinglePlayer) {
             JLabel winnerLabel = createLabel(determineWinnerText(), MEDIUM_FONT, WINNER_COLOR);
+            winnerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             topPanel.add(winnerLabel);
         }
 
-        JButton replayButton = createButton("Replay");
-        JButton mmButton = createButton("Main Menu");
-        JButton exitButton = createButton("Exit");
+        topPanel.add(Box.createVerticalStrut(30)); // Add some space before the buttons
 
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(BACKGROUND_COLOR);
-        buttonPanel.add(replayButton);
-        buttonPanel.add(mmButton);
-        buttonPanel.add(exitButton);
+        JButton replayButton = createButton("Replay");
+        replayButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        topPanel.add(replayButton);
+
+        topPanel.add(Box.createVerticalStrut(10)); // Add space between buttons
+
+        JButton mmButton = createButton("Main Menu");
+        mmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        topPanel.add(mmButton);
+
+        topPanel.add(Box.createVerticalStrut(10)); // Add space between buttons
+
+        JButton exitButton = createButton("Exit");
+        exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        topPanel.add(exitButton);
+
+        topPanel.add(Box.createVerticalGlue()); // Pushes everything to the center
 
         frame.setLayout(new BorderLayout());
         frame.add(topPanel, BorderLayout.CENTER);
-        frame.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -73,6 +91,8 @@ public class FinishScreen extends JPanel {
         mmButton.addActionListener(e -> goToMainMenu(frame));
         exitButton.addActionListener(e -> System.exit(0));
     }
+
+
 
     private JLabel createLabel(String text, Font font, Color color) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);

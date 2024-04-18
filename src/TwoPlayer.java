@@ -1,5 +1,4 @@
 package src;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -40,31 +39,29 @@ public class TwoPlayer extends HexBoard {
             scoreBoard.setVisible(true);
             finishButton.setVisible(false);
         }
-        else if(endGame){
-            System.out.println("End game pressed");
+
+        else if(currentPlayer == 2 && compare){
+            endGame =true;
             if(game_number == 1){
                 MainMenu.setPlayer_1_score(score);
                 MainMenu.restartTwoPlayerGame();
             }
             else{
                 MainMenu.setPlayer_2_score(score);
-                MainMenu.callFinishScreen(false);
-            }
+                if(this instanceof SinglePlayer){
+                    System.out.println("single player");
+                    MainMenu.callFinishScreen(true);
+                }else{
+                    MainMenu.callFinishScreen(false);
 
-        }
-        else if(currentPlayer == 2 && compare){
-            endGame =true;
+                }
+            }
 
         }else if (currentPlayer == 2) {
             compare = true;
         }
 
         repaint();
-
-//        System.out.println("player one atoms" + game_number +playerOneAtoms);
-//        System.out.println("player two guesses" +game_number+ playerTwoGuesses);
-//        System.out.println("player two rays" +game_number+ playerTwoRays);
-
     }
 
     public TwoPlayer(int game_number) {
@@ -95,6 +92,10 @@ public class TwoPlayer extends HexBoard {
         //add to panel
         this.add(scoreBoard);
         scoreBoard.setVisible(false);
+
+        playerOneAtoms.clear();
+        playerTwoGuesses.clear();
+        playerTwoRays.clear();
     }
 
     @Override
@@ -141,7 +142,12 @@ public class TwoPlayer extends HexBoard {
 
     private void updateFinishButtonState() {
         if (compare) {//if in comparison mode button used to end game
-            finishButton.setText("End Game");
+            if(game_number == 1){
+                finishButton.setText("Switch!");
+
+            }else{
+                finishButton.setText("End Game");
+            }
             finishButton.setVisible(true);
         } else if (playerOneAtoms.size() == MAX_ATOMS && currentPlayer == 1) {//if player 1 and 6 atoms placed button used to "finish" and move on
             finishButton.setText("Finish");
@@ -158,6 +164,14 @@ public class TwoPlayer extends HexBoard {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Call HexBoard's paintComponent to draw the base layer
         Graphics2D g2d = (Graphics2D) g;
+
+        if((game_number == 1 && currentPlayer == 1) || (game_number == 2 && currentPlayer == 2)){
+            MainMenu.frame.setTitle("\t\tTwo player - Player 1");
+        }
+        else if((game_number == 2 && currentPlayer == 1) || (game_number == 1 && currentPlayer == 2)){
+            MainMenu.frame.setTitle("\t\tTwo player - Player 2");
+        }
+
         if (currentPlayer == 1) {
             //draw atom (oval)
             for (Atom atom : playerOneAtoms) {
