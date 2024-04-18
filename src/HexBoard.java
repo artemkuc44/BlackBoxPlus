@@ -1,4 +1,3 @@
-
 package src;
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +23,7 @@ public class HexBoard extends JPanel {
     protected ArrayList<Point> rayMovement = new ArrayList<>();//array of points crossed in rays path
 
     private HashMap<Point,Point> rayMarkers = new HashMap<>();
+    protected JButton MainMenuButton;
 
     protected ArrayList<Ray> rays = new ArrayList<>();
 
@@ -35,7 +35,6 @@ public class HexBoard extends JPanel {
 
 
     public HexBoard() {
-
         hexCoordinates = new ArrayList<>();//needed to track hexes within board
         poulateHexArray();//populate the array^4
         populateBorderHex();
