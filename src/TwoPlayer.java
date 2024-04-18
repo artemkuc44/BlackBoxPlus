@@ -11,8 +11,6 @@ import java.util.*;
 public class TwoPlayer extends HexBoard {
     protected static final int DISPLAY_HEIGHT = 800;
     protected static final int DISPLAY_WIDTH = 800;
-    protected static final int BUTTON_HEIGHT = 75;
-    private static final int BUTTON_WIDTH = 150;
     int game_number;
     boolean compare = false;
     boolean endGame = false;
@@ -20,13 +18,9 @@ public class TwoPlayer extends HexBoard {
     protected int currentPlayer; // 1 or 2 to indicate whose turn it is
     protected static ArrayList<Atom> playerOneAtoms = new ArrayList<>();
     protected static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();
-
     ArrayList<Point> guessedCorrectly = new ArrayList<>();
-
     private ArrayList<Ray> playerTwoRays = new ArrayList<>();
-
     boolean isSinglePlayer = false;
-
     //protected JButton CompareButton;
     protected JButton finishButton;
     protected JLabel scoreBoard;
@@ -40,7 +34,10 @@ public class TwoPlayer extends HexBoard {
             scoreBoard.setVisible(true);
             finishButton.setVisible(false);
         }
-        else if(endGame){
+        else if(isSinglePlayer) {
+            MainMenu.callFinishScreen(true);
+        }
+        else if(isSinglePlayer){
             System.out.println("End game pressed");
             if(game_number == 1){
                 MainMenu.setPlayer_1_score(score);
@@ -50,15 +47,13 @@ public class TwoPlayer extends HexBoard {
                 MainMenu.setPlayer_2_score(score);
                 MainMenu.callFinishScreen(false);
             }
-
         }
         else if(currentPlayer == 2 && compare){
-            endGame =true;
+            MainMenu.callFinishScreen(true);
 
         }else if (currentPlayer == 2) {
             compare = true;
         }
-
         repaint();
 
 //        System.out.println("player one atoms" + game_number +playerOneAtoms);
@@ -197,7 +192,6 @@ public class TwoPlayer extends HexBoard {
                         break; // Stop checking if a match is found
                     }
                 }
-
                 //Draw the guess with the appropriate colour
                 g2d.setColor(matchFound ? Color.green : Color.red);
                 Point pixelPoint = axialToPixel(guess.getPosition().x, guess.getPosition().y);
@@ -225,8 +219,6 @@ public class TwoPlayer extends HexBoard {
         }
         if(endGame){
             updateFinishButtonState();
-
         }
     }
-
 }
