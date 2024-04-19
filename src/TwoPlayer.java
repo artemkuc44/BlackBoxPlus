@@ -9,14 +9,16 @@ import java.util.*;
 
 
 public class TwoPlayer extends HexBoard {
+    public static int currentPlayer;
     protected final int MAX_ATOMS = 6;
+    public boolean compare;
     int game_number;//needed for switch
-    boolean comparing = false;//flag to show comparing screen
-    boolean endGame = false;//flag to show game is finished
+    public boolean comparing = false;//flag to show comparing screen
+    public boolean endGame = false;//flag to show game is finished
     boolean scoreCalcluatedFlag = false;//flag so score only calculated once
-    protected int currentPlayer; // 1 or 2 to indicate whose turn it is
-    protected static ArrayList<Atom> playerOneAtoms = new ArrayList<>();//player ones hidden atoms
-    protected static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();//player twos gussed atoms
+     // 1 or 2 to indicate whose turn it is
+    public static ArrayList<Atom> playerOneAtoms = new ArrayList<>();//player ones hidden atoms
+    public static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();//player twos gussed atoms
 
     ArrayList<Point> guessedCorrectly = new ArrayList<>();//atoms that have been guessed correctly
 
@@ -59,7 +61,7 @@ public class TwoPlayer extends HexBoard {
 
     }
 
-    void finishAction() {
+    public void finishAction() {
         try {//try catch block for error handling
             //if current plyer is 1 and button pressed move to next player
             if (currentPlayer == 1) {
@@ -94,7 +96,7 @@ public class TwoPlayer extends HexBoard {
 
 
     @Override
-    protected void handleMouseClick(Point hexCoord, Point clickedPoint) {
+    public void handleMouseClick(Point hexCoord, Point clickedPoint) {
         if (currentPlayer == 1 && !comparing) {
             if (hexCoordinates.contains(hexCoord)) {//if click within board
                 Atom existingAtom = findAtomByAxial(playerOneAtoms, hexCoord);//try find atom in playerOneAtoms arrayList
@@ -233,7 +235,25 @@ public class TwoPlayer extends HexBoard {
         String title = "\t\tTwo player - " + player + " - " + action;
         MainMenu.frame.setTitle(title);//set game info at top
     }
+    public static boolean AllAtomsCorrect() {
+        // Check if Player 2 has guessed all atoms correctly.
+        for (Atom guess : playerTwoGuesses) {
+            boolean foundMatch = false;
+            for (Atom original : playerOneAtoms) {
+                if (original.getPosition().equals(guess.getPosition())) {
+                    foundMatch = true;
+                    break; // A matching atom is found, no need to check further
+                }
+            }
+            if (!foundMatch) {
+                // If even one guess is wrong, Player 1 wins
+                return false;
+            }
+        }
+        // If all guesses are correct, Player 2 wins
 
+        return true;
+    }
 
 
 }
