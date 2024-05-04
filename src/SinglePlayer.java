@@ -29,7 +29,7 @@ public class SinglePlayer extends TwoPlayer {
     }
 
     @Override
-    protected void handleMouseClick(Point hexCoord, Point clickedPoint) {
+    public void handleMouseClick(Point hexCoord, Point clickedPoint) {
         // Only handle clicks for Player 2's actions
         if (currentPlayer == 2) {
             super.handleMouseClick(hexCoord, clickedPoint);
