@@ -32,14 +32,25 @@ public class TwoPlayer extends HexBoard {
 
         button = new JButton("Hide");//button set to "hide" initially for when player is ready to hide atoms
         button.setBounds(25, 25, 100, 50);
-        button.addActionListener(e -> finishAction());//assign to action listener
-
+        button.addActionListener(e -> updateButtonAction());//assign to action listener
         this.setLayout(null); //Set layout to null for absolute positioning
         this.add(button);//add button to disp
+
         button.setVisible(false); //Initially hide the button
-        drawRayPaths = false;//ray paths would make game too easy
+
+        drawRayPaths = false;
 
         //initialize the score board label with a border and background
+        createScoreBoard();
+
+        //clear arrays for previous games
+        clearAllArrays();
+
+        setMaxAtoms(this.MAX_ATOMS);
+
+    }
+
+    void createScoreBoard(){
         scoreBoard = new JLabel("Score: " + score, SwingConstants.CENTER);//create scoreboard top right
         scoreBoard.setBounds(675, 25, 100, 50);
         scoreBoard.setOpaque(true); //allow background coloring
@@ -49,25 +60,25 @@ public class TwoPlayer extends HexBoard {
         scoreBoard.setBorder(border);
         this.add(scoreBoard);//add to panel
         scoreBoard.setVisible(false);
+    }
 
-        //clear arrays for previous games
+    void clearAllArrays(){
         playerOneAtoms.clear();
         playerTwoGuesses.clear();
         playerTwoRays.clear();
-
-        setMaxAtoms(this.MAX_ATOMS);
-
     }
 
-    void finishAction() {
+
+    void updateButtonAction() {
         try {//try catch block for error handling
-            //if current plyer is 1 and button pressed move to next player
-            if (currentPlayer == 1) {
+            if (currentPlayer == 1) {//if current player is 1 and button pressed move to next player
+
                 currentPlayer = 2;
                 scoreBoard.setVisible(true);
                 button.setVisible(false);
             } else if (currentPlayer == 2 && comparing) {//if curr player 2 and comparing and button pressed move to end game stge
                 endGame = true;
+                setTitleText();
                 if (game_number == 1) {//if first game
                     MainMenu.setPlayer_1_score(score);//store score in mainMenu
                     MainMenu.restartTwoPlayerGame();//create and play another game with roles "switched"
@@ -123,7 +134,11 @@ public class TwoPlayer extends HexBoard {
                 Ray ray = new Ray(hexCoord, closestSide(clickedPoint));//create new ray
                 moveRay(ray, playerOneAtoms);//move this ray based on the atoms in playerOneAtoms
                 playerTwoRays.add(ray);//add rays to playerTwoRays
-                score++;//inc score
+                if(ray.getEntryPoint().equals(ray.getExitPoint()) || ray.getType() == 1){
+                    score++;//inc score
+                }else{
+                    score += 2;
+                }
                 scoreBoard.setText("Score: " + score);//update scoreboard text
             }
         }
@@ -143,7 +158,7 @@ public class TwoPlayer extends HexBoard {
             button.setText("Hide");
             button.setVisible(true);
         } else if (playerTwoGuesses.size() == MAX_ATOMS && currentPlayer == 2) {//if player 2 placed 6 atoms button used to "compare" to hidden
-            button.setText("compare");
+            button.setText("Compare");
             button.setVisible(true);
         } else {
             button.setVisible(false);
@@ -154,7 +169,7 @@ public class TwoPlayer extends HexBoard {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); //call HexBoard's paintComponent to draw the base layer
         Graphics2D g2d = (Graphics2D) g;
-        setTitle();//set text showing game details (game mode, current player, action)
+        setTitleText();//set text showing game details (game mode, current player, action)
         if (currentPlayer == 1) {
             //draw atoms (circle)
             for (Atom atom : playerOneAtoms) {
@@ -201,7 +216,7 @@ public class TwoPlayer extends HexBoard {
                 g2d.fillOval(pixelPoint.x - HEX_SIZE / 2, pixelPoint.y - HEX_SIZE / 2, HEX_SIZE, HEX_SIZE);//draw filled circle
             }
             if(!scoreCalcluatedFlag){//if score hasnt yet been calculated
-                score += (HexBoard.MAX_ATOMS-guessedCorrectly.size())*10;//calc score
+                score += (HexBoard.MAX_ATOMS-guessedCorrectly.size())*5;//calc score
                 scoreCalcluatedFlag = true;//mark as calculated
             }
             scoreBoard.setText("Score: " + score); // Update the score display
@@ -221,17 +236,24 @@ public class TwoPlayer extends HexBoard {
         }
     }
 
-    private void setTitle() {
-        String player = (currentPlayer == 1) ? "Player 1" : "Player 2";
-        String action = (currentPlayer == 1) ? "Hiding Atoms..." : "Finding Atoms...";
-
+    private void setTitleText() {
         //if its the second game being player, the players titles are swapped(player 2 is now playing as player 1).
-        if (game_number == 2) {
-            player = (currentPlayer == 1) ? "Player 2" : "Player 1";
-        }
+        if(!comparing) {
+            String player = (currentPlayer == 1) ? "Player 1" : "Player 2";
+            String action = (currentPlayer == 1) ? "Hiding Atoms..." : "Finding Atoms...";
 
-        String title = "\t\tTwo player - " + player + " - " + action;
-        MainMenu.frame.setTitle(title);//set game info at top
+            if (game_number == 2) {
+                player = (currentPlayer == 1) ? "Player 2" : "Player 1";
+            }
+
+            String title = "\t\tTwo player - " + player + " - " + action;
+            MainMenu.frame.setTitle(title);//set game info at top
+        }else if(endGame){
+            MainMenu.frame.setTitle("Game End...");//set game info at top
+        }
+        else{
+            MainMenu.frame.setTitle("Comparing...");//set game info at top
+        }
     }
 
 

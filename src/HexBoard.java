@@ -91,7 +91,7 @@ public class HexBoard extends JPanel {
     }
 
     public Point closestSide(Point clickedPoint){//returns direction of ray movement
-        double min = 1000000000;//"max" val
+        double min = Double.MAX_VALUE;//"max" val
         Point minPoint = clickedPoint;//needed to initialise to something
         for(Point internalPoint:hexCoordinates){//for all hexCoordinates points (inefficient)
             Point pixelInternal = axialToPixel(internalPoint.x, internalPoint.y);//convert to pixel(needed for distance)
@@ -337,42 +337,36 @@ public class HexBoard extends JPanel {
 
     //should probably be in ray class in future returning exit point
     public void moveRay(Ray ray,ArrayList<Atom> atomsList){
-        int count = 0;//how many neighbours
+        int numNeighboursEncountered = 0;//how many neighbours
         //Point currPoint = ray.getEntryPoint();//very intereseting case where entry point was being refrenced and altered despite being final
         Point currPoint = new Point(ray.getEntryPoint().x,ray.getEntryPoint().y);//new point needed to be initialised to removed any reference to entry point
-        System.out.println("entry point" + ray.getEntryPoint());
-
+        //System.out.println("entry point" + ray.getEntryPoint());
         while(hexCoordinates.contains(currPoint) || (borderHex.contains(currPoint))){
-            count = 0;
+            numNeighboursEncountered = 0;
             for(Atom atom:atomsList){//traverse atom array
                 if(atom.getNeighbours().containsKey(ray.getEntryPoint())){//checks for deflection with circle of influence on border
-                    ray.setExitPoint(ray.getEntryPoint());
-                    if(new Point(ray.getDirection().x + ray.getEntryPoint().x,ray.getDirection().y + ray.getEntryPoint().y).equals(atom.getPosition())){//checks if next hex in ray path contains atom
+                    ray.setExitPoint(ray.getEntryPoint());//deflects back to itself
+                    if(atomsContainsCoord(new Point(ray.getDirection().x + ray.getEntryPoint().x,ray.getDirection().y + ray.getEntryPoint().y)
+                            ,atomsList)){//checks if next hex in ray path contains atom
                         ray.setType(1);//absorption
                     }
                     ray.setdirection(new Point(ray.getDirection().x*-1,ray.getDirection().y *-1));//stops from markers being drawn back to back
                     return;
                 }
-                else if(atom.getNeighbours().containsKey(currPoint)){
+                if(atom.getNeighbours().containsKey(currPoint)){
                     // Retrieve the direction from the atom to the Neighbour (which is the key's value)
                     Point neighbourDirection = atom.getNeighbours().get(currPoint);
-                    // Add directions
+                    // Add directions (deflection)
                     ray.setdirection(new Point(ray.getDirection().x + neighbourDirection.x, ray.getDirection().y + neighbourDirection.y));
-                    count++;
+                    numNeighboursEncountered++;
                 }
             }
-            if(ray.getDirection().equals(new Point(0,0)) && count == 1){//absorbtion (directions cancel out)
+            if((ray.getDirection().equals(new Point(0,0)) && numNeighboursEncountered == 1)){//absorbtion (directions cancel out)
                 ray.setExitPoint(currPoint);
                 ray.setType(1);
                 return;
             }
             if(drawRayPaths){
-                //for now to be able to remove rays + ray markers for testing
-//                if(rayMovement.contains(currPoint)){
-//                    rayMovement.remove(currPoint);
-//                }else{
-//                    rayMovement.add(new Point(currPoint.x,currPoint.y));
-//                }
                 rayMovement.add(new Point(currPoint.x,currPoint.y));
             }
             currPoint.x += ray.getDirection().x;
@@ -387,6 +381,15 @@ public class HexBoard extends JPanel {
 
     public void setMaxAtoms(int maxAtoms){
         MAX_ATOMS = maxAtoms;
+    }
+
+    public boolean atomsContainsCoord(Point coord,ArrayList<Atom> atomArray){
+        for(Atom atom:atomArray){
+            if(atom.getPosition().equals(coord)){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

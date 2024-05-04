@@ -221,20 +221,39 @@ public class MainMenu {
 
         switch(gameMode){
             case "Sandbox":
-                RuleSet =     "The Sandbox is an area for you to experiment with the capability of our game and develop\nyour own understanding of the logic behind the atoms, their circle of influence and the rays.\n\n" +
-                        "ATOMS:\nIn the Sandbox you can place the atoms and clearly see the circle of influence\nand it affects the atoms around it.\n\n" +
-                        "RAYS:\nThe ray markers have a random distinctive colour for each one of them that makes it easier\nfor the user to see where the ray ends up unless its absorbed which turns black.The rays\nthemselves have a distinctive green colour which shows the path the rays take between\nthe atoms.\n\n" +
-                        "ENJOY";
+                RuleSet =     "\nThe Sandbox is an area for you to experiment with the capability of the game and develop\nyour own understanding for the game mechanics.\n\n" +
+                        "ATOMS:\nIn the Sandbox you can place/remove atoms and clearly see the circle of influence\nand its effects on rays.\n" +
+                        "The atoms appear as black circles with a red highlighted circle of influence, used\n to deflect the atoms.\n\n" +
+                        "RAYS:\nSend rays by clicking along the border closer to the side from which you want to send the ray.\nIf you wish to remove the ray simply press the ray again.\nAbsorbed rays are marked black while other rays are marked with a distinct colour\n\n" +
+                        "ENJOY :)";
                 break;
 
             case "2 Player":
-                RuleSet ="The 2 player mode is a great mode to play with friends. One places the atoms, the other\nfinds them.\n\n" +
-                        "The Rules:\nPlayer 1 places 6 atoms\nThe game commences and Player 2 has to find all 6 atoms by strategically placing rays around\nthe board to find the atoms\n\n" +
-                        "The Winner:\nIt being a 2 player game there is two different ways of winning:\n •If player 1 places his atoms well and player 2's score falls below 70: player 1 wins \n•If player 2 finds all the atoms or his score remains above 100: Player 2 wins\n\n";
-                break;//TODO fix rules for single and 2 player
+                RuleSet ="\nThe two player mode is perfect for playing with friends.\n"+
+                "First player 1 strategically places atoms, once 6 are placed they get the "+
+                "option to hide the atoms.\n"+
+                "It then becomes player 2s turn, player 2 attempts to find the hidden atoms "+
+                "by sending rays \nfrom the border and placing blue guess atoms depending on entry/exit " +
+                "positions of the placed rays.\n"+
+                "Once player 2 is satisfied with their 6 guess atoms they get the option to compare.\n"+
+                "After comparing the players then switch roles and play through to the end where the scores are\n" +
+                "compared and the winner is announced."+
+                "\nComparison atoms:\n"+
+                "Green: Correctly guessed.\n"+
+                "Red: incorrectly guessed.\n"+
+                "Black: unfound.\n"+
+                "ENJOY :)";
+                break;
             case "Single Player":
-                RuleSet = "The Single player mode will be the most popular for the people who want to master a game.\nThe CPU randomly place the atoms around the board and the player has to find the atoms.\n\n" +
-                        "The Rules:Once game commences and the player has to find all 6 atoms by strategically\n placing rays around the board to find the atoms\n\n";
+                RuleSet = "\nThe Single player mode is perfect for helping one master the game.\n" +
+                        "The atoms are randomly allocated and hidden for you to find.\n\n" +
+                        "Strategically send rays and deduce atom locations, once 6 guess atoms have been placed\n" +
+                        "compare your guesses to the initially hidden atoms and see your resulting score.\n"+
+                        "\nComparison atoms:\n"+
+                        "Green: Correctly guessed.\n"+
+                        "Red: incorrectly guessed.\n"+
+                        "Black: unfound.\n"+
+                        "ENJOY :)";;
                 break;
             default:
                 RuleSet = "Error";

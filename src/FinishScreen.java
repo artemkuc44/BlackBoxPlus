@@ -16,8 +16,6 @@ public class FinishScreen extends JPanel {
         this.player1_score = player1_score;
         this.player2_score = player2_score;
         this.isSinglePlayer = isSinglePlayer;
-        System.out.println("Player 1 score: " + player1_score);
-        System.out.println("Player 2 score: " + player2_score);
         finishScreen();
     }
     private void finishScreen() {
@@ -81,6 +79,31 @@ public class FinishScreen extends JPanel {
         mmButton.addActionListener(e -> goToMainMenu(frame));
         exitButton.addActionListener(e -> System.exit(0));
     }
+
+    private void replayGame(JFrame frame) {
+        if(isSinglePlayer) {
+            SinglePlayer singlePlayerPanel = new SinglePlayer();
+            frame.setTitle("Single Player");
+            frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
+            frame.setSize(800,800);
+            frame.setLocationRelativeTo(null); //makes it so when launching, it launches in the middle of the screen.
+            frame.add(singlePlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+        }else{
+            TwoPlayer twoPlayerPanel = new TwoPlayer(1);
+            frame.setTitle("Two Player");
+            frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
+            frame.setSize(800,800);
+            frame.setLocationRelativeTo(null); //makes it so when launching, it launches in the middle of the screen.
+            frame.add(twoPlayerPanel, BorderLayout.CENTER); //adds the hex panel.
+        }
+        frame.validate(); //validates
+        frame.repaint(); //painting
+    }
+    private void goToMainMenu(JFrame frame) {
+        MainMenu.frame.dispose();
+        MainMenu.displayMainMenu();
+        frame.dispose();
+    }
     private JLabel createLabel(String text, Font font) {
         JLabel label = new JLabel(text, SwingConstants.CENTER);
         label.setFont(font);
@@ -106,35 +129,7 @@ public class FinishScreen extends JPanel {
             }
         }
     }
-    private void replayGame(JFrame frame) {
-        if(isSinglePlayer) {
-            frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
-            SinglePlayer singlePlayerPanel = new SinglePlayer();
-            frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
-            frame.setSize(800,800);
-            frame.setLocationRelativeTo(null); //makes it so when launching, it launches in the middle of the screen.
-            frame.add(singlePlayerPanel, BorderLayout.CENTER); //adds the hex panel.
-            frame.setTitle("Single Player");
-            frame.validate(); //validates
-            frame.repaint(); //painting
-        }else{
-            TwoPlayer twoPlayerPanel = new TwoPlayer(1);
-            frame.getContentPane().removeAll(); //when its pressed, removes everything on screen
-            frame.setSize(800,800);
-            frame.setLocationRelativeTo(null); //makes it so when launching, it launches in the middle of the screen.
-            frame.add(twoPlayerPanel, BorderLayout.CENTER); //adds the hex panel.
-            frame.setTitle("Two Player");
-            frame.validate(); //validates
-            frame.repaint(); //painting
-        }
-        frame.validate(); //validates
-        frame.repaint(); //painting
-    }
-    private void goToMainMenu(JFrame frame) {
-        MainMenu.frame.dispose();
-        MainMenu.displayMainMenu();
-        frame.dispose();
-    }
+
     private int findWinner() {
         if(player1_score < player2_score){
             return 1;
