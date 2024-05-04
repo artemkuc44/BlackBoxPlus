@@ -11,12 +11,12 @@ import java.util.*;
 public class TwoPlayer extends HexBoard {
     protected final int MAX_ATOMS = 6;
     int game_number;//needed for switch
-    boolean comparing = false;//flag to show comparing screen
+    public boolean comparing = false;//flag to show comparing screen
     boolean endGame = false;//flag to show game is finished
     boolean scoreCalcluatedFlag = false;//flag so score only calculated once
-    protected int currentPlayer; // 1 or 2 to indicate whose turn it is
-    protected static ArrayList<Atom> playerOneAtoms = new ArrayList<>();//player ones hidden atoms
-    protected static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();//player twos gussed atoms
+    public int currentPlayer; // 1 or 2 to indicate whose turn it is
+    public static ArrayList<Atom> playerOneAtoms = new ArrayList<>();//player ones hidden atoms
+    public static ArrayList<Atom> playerTwoGuesses = new ArrayList<>();//player twos gussed atoms
 
     ArrayList<Point> guessedCorrectly = new ArrayList<>();//atoms that have been guessed correctly
 

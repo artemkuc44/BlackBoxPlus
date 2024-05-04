@@ -28,6 +28,8 @@
 //
 //    @Test
 //    void CorrectGuesses() {
+//        TwoPlayer.playerTwoGuesses.clear();
+//        TwoPlayer.playerOneAtoms.clear();
 //        // Setup - Player 1 places atoms
 //        TwoPlayer.playerOneAtoms.add(new Atom(new Point(0, 1)));
 //        TwoPlayer.playerOneAtoms.add(new Atom(new Point(1, 0)));
@@ -44,11 +46,14 @@
 //        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(3, 1)));
 //        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(3, 0)));
 //
-//        Assertions.assertTrue(FinishScreen.findWinner(), "Player 2 wins if all guesses are correct.");
+//        Assertions.assertTrue(TwoPlayer.AllAtomsCorrect(), "Player 2 wins if all guesses are correct.");
 //    }
 //
 //    @Test
 //    void IncorrectGuesses() {
+//
+//        TwoPlayer.playerTwoGuesses.clear();
+//        TwoPlayer.playerOneAtoms.clear();
 //        TwoPlayer.playerOneAtoms.add(new Atom(new Point(0, 1)));
 //        TwoPlayer.playerOneAtoms.add(new Atom(new Point(1, 0)));
 //        TwoPlayer.playerOneAtoms.add(new Atom(new Point(2, 1)));
@@ -64,7 +69,7 @@
 //        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(3, 1)));
 //        TwoPlayer.playerTwoGuesses.add(new Atom(new Point(4, 0)));
 //
-//        assertFalse(FinishScreen.findWinner(), "Player 1 should win if Player 2 guesses incorrectly.");
+//        assertFalse(TwoPlayer.AllAtomsCorrect(), "Player 1 should win if Player 2 guesses incorrectly.");
 //    }
 ///*
 //    @Test
@@ -82,17 +87,17 @@
 //
 //    @Test
 //    void testFinishActionTransitionsFromPlayerOneToTwo() {
-//        TwoPlayer game = new TwoPlayer();
+//        TwoPlayer game = new TwoPlayer(1);
 //        game.currentPlayer = 1;
 //        game.finishAction();
-//        assertEquals(2, game.currentPlayer, "Should switch from player1 to player2.");
+//        assertEquals(2, TwoPlayer.currentPlayer, "Should switch from player1 to player2.");
 //    }
 //
 //    @Test
 //    void testFinishActionConcludesGameAfterPlayerTwoFinishes() {
-//        TwoPlayer game = new TwoPlayer();
+//        TwoPlayer game = new TwoPlayer(1);
 //        game.currentPlayer = 2;
-//        game.compare = true;
+//        game.comparing = true;
 //        game.finishAction();
 //        assertTrue(game.endGame, "The game should be marked as finished after player 2 compares and ends game.");
 //    }
@@ -100,3 +105,4 @@
 ////replay game unit tests to be added.
 //    //main menu function maybe
 //}
+//
