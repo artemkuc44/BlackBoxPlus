@@ -12,6 +12,7 @@ import java.util.HashMap;
 /**
  * Represents a hexagonal board where atoms and rays can be interacted with.
  * It handles drawing the hexgonal grid and border, adding/removing atoms and rays, and managing mouse interactions.
+ * Main game class from which game modes are extended to.
  */
 
 public class HexBoard extends JPanel {
@@ -246,7 +247,7 @@ public class HexBoard extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         drawNeighbourHighlights(g2d);
-        drawHexagons(g2d);
+        drawHexagonalGrid(g2d);
         drawAtoms(g2d);
         if (drawRayPathsFlag) {
             drawRayPaths(g2d);
@@ -263,7 +264,7 @@ public class HexBoard extends JPanel {
      * @param g2d The Graphics2D object used for detailed drawing within the paintComponent.
      */
 
-    private void drawHexagons(Graphics2D g2d) {
+    private void drawHexagonalGrid(Graphics2D g2d) {
         FontMetrics metrics = g2d.getFontMetrics();
         int radius = DIAMETER_HEXAGONS / 2 + 1;
         for (int q = -radius; q <= radius; q++) {
@@ -271,7 +272,7 @@ public class HexBoard extends JPanel {
                 Point point = axialToPixel(q, r);
                 Path2D hexagon = createHexagonalCell(point.x, point.y);
                 g2d.draw(hexagon);
-                if (borderHexCoordinates.contains(new Point(q, r))) {
+                if (borderHexCoordinates.contains(new Point(q, r))) {//highlight bordering hexagons
                     g2d.setColor(new Color(0, 0, 0, 75));
                     g2d.fill(hexagon);
                     g2d.setColor(Color.BLACK);
