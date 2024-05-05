@@ -2,7 +2,11 @@ package src;
 
 import java.awt.*;
 import java.util.Random;
-
+/**
+ * Represents a ray in the game. The ray has an entry point, entry direction,
+ * and potentially an exit point depending on interactions within the grid.
+ * Carries a colour for ray markers
+ */
 public class Ray{
     private final Point entryPoint;//axial coord of hexagons from which is enters
 
@@ -19,6 +23,13 @@ public class Ray{
     private int b = random.nextInt(256);
 
 
+    /**
+     * Constructs a Ray with specified entry point and entry direction.
+     * Throws IllegalArgumentException if the direction is outside the allowable range.
+     *
+     * @param entryPoint The axial coordinate of the hexagon from which the ray enters.
+     * @param entryDirection The initial direction of the ray's movement.
+     */
     public Ray(Point entryPoint,Point entryDirection){
         if(entryDirection.x < -1 || entryDirection.y<-1 || entryDirection.x > 1 || entryDirection.y>1){
             throw new IllegalArgumentException("direction out of range");
@@ -51,14 +62,8 @@ public class Ray{
         return direction;
     }
 
-//    public void setEntryDirection(Point entryDirection){
-//        if(entryDirection.x < -1 || entryDirection.y<-1 || entryDirection.x > 1 || entryDirection.y>1){
-//            throw new IllegalArgumentException("direction out of range");
-//        }
-//        this.entryDirection = entryDirection;
-//    }
 
-    public void setdirection(Point direction) {
+    public void setDirection(Point direction) {
         if(entryDirection.x < -1 || entryDirection.y<-1 || entryDirection.x > 1 || entryDirection.y>1){
             throw new IllegalArgumentException("direction out of range");
         }

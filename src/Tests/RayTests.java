@@ -1,14 +1,11 @@
 package src.Tests;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import src.Atom;
 import src.HexBoard;
 import src.Ray;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,12 +30,12 @@ public class RayTests {
         Atom atom5 = new Atom(new Point(4,-1));
         Atom atom6 = new Atom(new Point(-1,-2));
 
-        hexGridPanel.atoms.add(atom1);
-        hexGridPanel.atoms.add(atom2);
-        hexGridPanel.atoms.add(atom3);
-        hexGridPanel.atoms.add(atom4);
-        hexGridPanel.atoms.add(atom5);
-        hexGridPanel.atoms.add(atom6);
+        hexGridPanel.atomsList.add(atom1);
+        hexGridPanel.atomsList.add(atom2);
+        hexGridPanel.atomsList.add(atom3);
+        hexGridPanel.atomsList.add(atom4);
+        hexGridPanel.atomsList.add(atom5);
+        hexGridPanel.atomsList.add(atom6);
 
         Ray ray10 = new Ray(new Point(-5,0),new Point(1,0));
         Ray ray24 = new Ray(new Point(-2,5),new Point(0,-1));
@@ -47,12 +44,12 @@ public class RayTests {
         Ray ray41 = new Ray(new Point(5,-2),new Point(-1,0));
         Ray ray8 = new Ray(new Point(-4,-1),new Point(1,0));
 
-        hexGridPanel.moveRay(ray10,hexGridPanel.atoms);
-        hexGridPanel.moveRay(ray24,hexGridPanel.atoms);
-        hexGridPanel.moveRay(ray28,hexGridPanel.atoms);
-        hexGridPanel.moveRay(ray32,hexGridPanel.atoms);
-        hexGridPanel.moveRay(ray41,hexGridPanel.atoms);
-        hexGridPanel.moveRay(ray8,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray10,hexGridPanel.atomsList);
+        hexGridPanel.moveRay(ray24,hexGridPanel.atomsList);
+        hexGridPanel.moveRay(ray28,hexGridPanel.atomsList);
+        hexGridPanel.moveRay(ray32,hexGridPanel.atomsList);
+        hexGridPanel.moveRay(ray41,hexGridPanel.atomsList);
+        hexGridPanel.moveRay(ray8,hexGridPanel.atomsList);
 
         assertEquals(new Point(-5,4),ray24.getExitPoint());
         assertEquals(ray28.getEntryPoint(),ray28.getExitPoint());
@@ -72,21 +69,21 @@ public class RayTests {
         Atom atom11 = new Atom(new Point(2,-2));//top right
         Atom atom12 = new Atom(new Point(0,-2));//top left
 
-        hexGridPanel.atoms.add(atom7);
-        hexGridPanel.atoms.add(atom8);
-        hexGridPanel.atoms.add(atom9);
-        hexGridPanel.atoms.add(atom10);
-        hexGridPanel.atoms.add(atom11);
-        hexGridPanel.atoms.add(atom12);
+        hexGridPanel.atomsList.add(atom7);
+        hexGridPanel.atomsList.add(atom8);
+        hexGridPanel.atomsList.add(atom9);
+        hexGridPanel.atomsList.add(atom10);
+        hexGridPanel.atomsList.add(atom11);
+        hexGridPanel.atomsList.add(atom12);
 
 
         Ray ray30 = new Ray(new Point(1,4),new Point(0,-1));
         Ray ray14 = new Ray(new Point(-5,2),new Point(1,0));
         Ray ray48 = new Ray(new Point(4,-5),new Point(-1,1));
 
-        hexGridPanel.moveRay(ray30,hexGridPanel.atoms);
-        hexGridPanel.moveRay(ray14,hexGridPanel.atoms);
-        hexGridPanel.moveRay(ray48,hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray30,hexGridPanel.atomsList);
+        hexGridPanel.moveRay(ray14,hexGridPanel.atomsList);
+        hexGridPanel.moveRay(ray48,hexGridPanel.atomsList);
 
         assertEquals(new Point(-2,3),ray30.getExitPoint());//absorbtion
         assertEquals(ray14.getEntryPoint(),ray14.getExitPoint());//reflection
@@ -115,7 +112,7 @@ public class RayTests {
 
     @Test
     void CheckDirection() {
-        assertDoesNotThrow(() -> ray.setdirection(new Point(0, -1)));
+        assertDoesNotThrow(() -> ray.setDirection(new Point(0, -1)));
         assertEquals(0, ray.getDirection().x);
         assertEquals(-1, ray.getDirection().y);
     }
@@ -148,7 +145,7 @@ public class RayTests {
     void testRayNoInteraction() {
         Ray ray1 = new Ray(new Point(-5,0),new Point(1,0));
 
-        hexGridPanel.moveRay(ray1, hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray1, hexGridPanel.atomsList);
 
         assertEquals(new Point(5,0), ray1.getExitPoint(), "Ray should go straight through " +
                 "the board without any change in direction");
@@ -158,12 +155,12 @@ public class RayTests {
         Atom atom1 = new Atom(new Point(2,-2));
         Atom atom2 = new Atom(new Point(1,0));
 
-        hexGridPanel.atoms.add(atom1);
-        hexGridPanel.atoms.add(atom2);
+        hexGridPanel.atomsList.add(atom1);
+        hexGridPanel.atomsList.add(atom2);
 
         Ray ray1 = new Ray(new Point(5,-1),new Point(-1,0));
 
-        hexGridPanel.moveRay(ray1, hexGridPanel.atoms);
+        hexGridPanel.moveRay(ray1, hexGridPanel.atomsList);
 
         assertEquals(ray1.getEntryPoint(), ray1.getExitPoint(), "Ray should be absorbed by the " +
                 "aligned atoms.");

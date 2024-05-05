@@ -1,6 +1,5 @@
 package src.Tests;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import src.Atom;
 import src.HexBoard;
@@ -47,12 +46,12 @@ public class HexBoardTests {
         // Since we don't have a direct method to verify if an Atom was added at (x,y), we might need to adapt this
         // For example, assuming a method to check if an Atom exists at a certain hex coordinate (after converting pixel to hex)
         Point hexCoord = hexGridPanel.pixelToAxial(x, y); // Assuming this method is accessible
-        assertNotNull(hexGridPanel.findAtomByAxial(hexGridPanel.atoms,hexCoord), "An Atom should be added at the clicked hex coordinate");
+        assertNotNull(hexGridPanel.findAtomByAxial(hexGridPanel.atomsList,hexCoord), "An Atom should be added at the clicked hex coordinate");
     }
     @Test
     void testUpdateNeighbors() {
         Atom atom = new Atom(new Point(0, 0));
-        hexGridPanel.atoms.add(atom);
+        hexGridPanel.atomsList.add(atom);
 
         //hexGridPanel.updateNeighbours();
 
@@ -65,7 +64,7 @@ public class HexBoardTests {
         expectedNeighbors.add(new Point(-1, 1));
         expectedNeighbors.add(new Point(1, -1));
 
-        assertEquals(expectedNeighbors.size(), atom.getNeighbours().size());
+        assertEquals(expectedNeighbors.size(), atom.getAtomNeighbours().size());
         //assertTrue(atom.getNeighbours().containsAll(expectedNeighbors));
     }
 
@@ -109,7 +108,7 @@ public class HexBoardTests {
 
         // check to see the ones auto placed are actually in the board
         boolean allValid = TwoPlayer.playerOneAtoms.stream().allMatch(atom ->
-                game.hexCoordinates.contains(atom.getPosition()));
+                game.internalHexCoordinates.contains(atom.getAtomAxialPosition()));
         assertTrue(allValid, "All atoms placed by robot are in board.");
     }
 }

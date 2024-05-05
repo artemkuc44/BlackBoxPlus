@@ -2,40 +2,51 @@ package src;
 
 import java.awt.Point;
 import java.util.HashMap;
-
+/**
+ * Represents an atom its position and neighbouring internal hexagons (circle of influence)
+ */
 public class Atom {
+    private Point atomAxialPosition;
 
-    private Point position;
-    //private ArrayList<Point> neighbours;
-
-    private final HashMap<Point,Point> neighbours;
-
+    private final HashMap<Point,Point> atomNeighbours;
+    /**
+     * Constructs an atom with a position on the board.
+     * Initializes neighbors based on hexagonal grid directions matrix.
+     *
+     * @param position The position of the atom on the board.
+     */
     public Atom(Point position) {
-        this.position = position;
-        this.neighbours = new HashMap<>();
-        updateNeighbours();
+        this.atomAxialPosition = position;
+        this.atomNeighbours = new HashMap<>();
+        updateAtomNeighbours();
     }
 
-    public Point getPosition() {
-        return position;
+    public Point getAtomAxialPosition() {
+        return atomAxialPosition;
     }
 
+    /**
+     * Adds neighbour to hashmap, if not already contained
+     *
+     * @param neighbour The neighbour position.
+     * @param direction The relative direction from atom to the neighbor.
+     */
     public void addNeighbour(Point neighbour,Point direction) {
-        if (!neighbours.containsKey(neighbour)) {
-            neighbours.put(neighbour, direction);
+        if (!atomNeighbours.containsKey(neighbour)) {
+            atomNeighbours.put(neighbour, direction);
         }
     }
 
-    public HashMap<Point,Point> getNeighbours() {
-        return neighbours;
+    public HashMap<Point,Point> getAtomNeighbours() {
+        return atomNeighbours;
     }
 
-    public void updateNeighbours() {
+    public void updateAtomNeighbours() {
         // Clear existing Neighbours
-        getNeighbours().clear();
-        // Recalculate Neighbours
+        getAtomNeighbours().clear();
+        // Recalculate Neighbours by adding directions matrix to atom pos
         for (Point dir : HexBoard.DIRECTIONS) {
-            Point NeighbourPoint = new Point(getPosition().x + dir.x, getPosition().y + dir.y);
+            Point NeighbourPoint = new Point(getAtomAxialPosition().x + dir.x, getAtomAxialPosition().y + dir.y);
             addNeighbour(NeighbourPoint,dir);
 
         }
@@ -45,9 +56,9 @@ public class Atom {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Atom at: ");
-        sb.append(position.toString());
+        sb.append(atomAxialPosition.toString());
         sb.append(" with Neighbours: ");
-        for (Point Neighbour : neighbours.keySet()) {
+        for (Point Neighbour : atomNeighbours.keySet()) {
             sb.append(Neighbour.toString());
             sb.append(" ");
         }

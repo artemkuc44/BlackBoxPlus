@@ -1,14 +1,11 @@
 package src.Tests;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import src.Atom;
 import src.HexBoard;
 import src.TwoPlayer;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,15 +25,15 @@ public class AtomTests {
     void FindAtomByPoint() {
         Point testPoint = new Point(1, 1);
         Atom atom = new Atom(testPoint);
-        hexGridPanel.atoms.add(atom);
+        hexGridPanel.atomsList.add(atom);
 
-        Atom foundAtom = hexGridPanel.findAtomByAxial(hexGridPanel.atoms,testPoint);
+        Atom foundAtom = hexGridPanel.findAtomByAxial(hexGridPanel.atomsList,testPoint);
         assertNotNull(foundAtom);
-        assertEquals(testPoint, foundAtom.getPosition());
+        assertEquals(testPoint, foundAtom.getAtomAxialPosition());
 
         //try find non-existing atom
         Point nonExistingPoint = new Point(4, 4);
-        assertNull(hexGridPanel.findAtomByAxial(hexGridPanel.atoms,nonExistingPoint));
+        assertNull(hexGridPanel.findAtomByAxial(hexGridPanel.atomsList,nonExistingPoint));
     }
     @Test
     void handleMouseTester() {

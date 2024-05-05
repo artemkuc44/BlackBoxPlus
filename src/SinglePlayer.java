@@ -10,7 +10,7 @@ public class SinglePlayer extends TwoPlayer {
         randomlyAllocateAtoms(); // Randomly allocate atoms for Player 1
         button.setVisible(false); // Initially hide the finish button
         scoreBoard.setVisible(true);
-        drawRayPaths = false;
+        drawRayPathsFlag = false;
         setMaxAtoms(this.MAX_ATOMS);
 
     }
@@ -22,7 +22,7 @@ public class SinglePlayer extends TwoPlayer {
             int y = random.nextInt(DIAMETER_HEXAGONS) - DIAMETER_HEXAGONS / 2;
             Point randomPoint = new Point(x, y);
             // Ensure the random point is within hexCoordinates and not already occupied
-            if (hexCoordinates.contains(randomPoint) && findAtomByAxial(playerOneAtoms, randomPoint) == null) {
+            if (internalHexCoordinates.contains(randomPoint) && findAtomByAxial(playerOneAtoms, randomPoint) == null) {
                 playerOneAtoms.add(new Atom(randomPoint));
             }
         }
