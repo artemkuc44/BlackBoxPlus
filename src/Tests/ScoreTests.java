@@ -1,28 +1,19 @@
 package src.Tests;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
+
 import org.junit.jupiter.api.Test;
 import src.Atom;
-import src.FinishScreen;
-import src.HexBoard;
 import src.TwoPlayer;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ScoreTests {
 
-    @BeforeEach
-    void setUp() {
-        HexBoard hexGridPanel = new HexBoard();
-        hexGridPanel.setSize(800, 800);
-
-    }
-    private TwoPlayer game;
+    public static  int tester = 1;
+    //  private TwoPlayer game;
 
 
 
@@ -30,7 +21,7 @@ public class ScoreTests {
     void CorrectGuesses() {
         TwoPlayer.playerTwoGuesses.clear();
         TwoPlayer.playerOneAtoms.clear();
-        // Setup - Player 1 places atoms
+        // all player 1 guesses
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(0, 1)));
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(1, 0)));
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(2, 1)));
@@ -38,7 +29,7 @@ public class ScoreTests {
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(3, 1)));
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(3, 0)));
 
-        // Player 2 guesses
+        // all player 2 guesses
         TwoPlayer.playerTwoGuesses.add(new Atom(new Point(0, 1)));
         TwoPlayer.playerTwoGuesses.add(new Atom(new Point(1, 0)));
         TwoPlayer.playerTwoGuesses.add(new Atom(new Point(2, 1)));
@@ -47,6 +38,7 @@ public class ScoreTests {
         TwoPlayer.playerTwoGuesses.add(new Atom(new Point(3, 0)));
 
         Assertions.assertTrue(TwoPlayer.AllAtomsCorrect(), "Player 2 wins if all guesses are correct.");
+
     }
 
     @Test
@@ -54,6 +46,8 @@ public class ScoreTests {
 
         TwoPlayer.playerTwoGuesses.clear();
         TwoPlayer.playerOneAtoms.clear();
+        //^^ no atoms from previous games
+
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(0, 1)));
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(1, 0)));
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(2, 1)));
@@ -61,7 +55,6 @@ public class ScoreTests {
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(3, 1)));
         TwoPlayer.playerOneAtoms.add(new Atom(new Point(3, 0)));
 
-        // Player 2 guesses
         TwoPlayer.playerTwoGuesses.add(new Atom(new Point(0, 1)));
         TwoPlayer.playerTwoGuesses.add(new Atom(new Point(1, 0)));
         TwoPlayer.playerTwoGuesses.add(new Atom(new Point(2, 1)));
@@ -71,37 +64,26 @@ public class ScoreTests {
 
         assertFalse(TwoPlayer.AllAtomsCorrect(), "Player 1 should win if Player 2 guesses incorrectly.");
     }
-/*
-    @Test
-    void Player2NoGuesses() {
-        // Setup - Player 1 places atoms
-        TwoPlayer.playerOneAtoms.add(new Atom(new Point(0, 1)));
-        TwoPlayer.playerOneAtoms.add(new Atom(new Point(1, 0)));
-
-        // Player 2 makes no guesses
-        assertTrue(TwoPlayer.playerTwoGuesses.isEmpty(), "Player 2 has made no guesses.");
-
-        //assertFalse(game.findWinner(), "Player 1 should win if Player 2 makes no guesses."); //ask artjom will i even bother including this test.
-    }
-    */
-
     @Test
     void testFinishActionTransitionsFromPlayerOneToTwo() {
         TwoPlayer game = new TwoPlayer(1);
         TwoPlayer.currentPlayer = 1;
-        game.finishAction();
+        game.finishAction(); //switches pov
         assertEquals(2, TwoPlayer.currentPlayer, "Should switch from player1 to player2.");
     }
 
     @Test
     void testFinishActionConcludesGameAfterPlayerTwoFinishes() {
+        tester = 0; //added as finish action causes problems
         TwoPlayer game = new TwoPlayer(1);
+
         TwoPlayer.currentPlayer = 2;
         game.comparing = true;
         game.finishAction();
         assertTrue(game.endGame, "The game should be marked as finished after player 2 compares and ends game.");
+        tester = 1; //reverts back
     }
 
-//replay game unit tests to be added.
-    //main menu function maybe
+
 }
+

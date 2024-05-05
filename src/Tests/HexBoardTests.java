@@ -20,6 +20,7 @@ public class HexBoardTests {
 
     @BeforeEach
     void setUp() {
+        //runs before every test.
         hexGridPanel = new HexBoard();
         hexGridPanel.setSize(800, 800);
         game = new SinglePlayer();
@@ -28,23 +29,18 @@ public class HexBoardTests {
 
     @Test
     void testMouseClickedAtSpecificPoint() {
-        // Example: Simulate a mouse click at a specific point within the panel
-        // For simplicity, let's assume (100, 100) is within the hex grid boundaries
+        //sample co ords
         int x = 450;
         int y = 450;
         int button = MouseEvent.BUTTON1; // Left click
         int clickCount = 1;
 
-        // Create a MouseEvent to simulate the mouse click
+        // Obj for mouse click
         MouseEvent clickEvent = new MouseEvent(hexGridPanel, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, x, y, clickCount, false, button);
 
-        // Directly invoke the mouseClicked method of MouseListener
+        // sims mouse click
         hexGridPanel.getMouseListeners()[0].mouseClicked(clickEvent);
 
-        // Assertions to verify the expected outcome of the mouse click
-        // This could be checking if an Atom was added at the expected coordinates, etc.
-        // Since we don't have a direct method to verify if an Atom was added at (x,y), we might need to adapt this
-        // For example, assuming a method to check if an Atom exists at a certain hex coordinate (after converting pixel to hex)
         Point hexCoord = hexGridPanel.pixelToAxial(x, y); // Assuming this method is accessible
         assertNotNull(hexGridPanel.findAtomByAxial(hexGridPanel.atomsList,hexCoord), "An Atom should be added at the clicked hex coordinate");
     }
@@ -56,7 +52,7 @@ public class HexBoardTests {
         //hexGridPanel.updateNeighbours();
 
         ArrayList<Point> expectedNeighbors = new ArrayList<>();
-        // Add expected neighbors based on the DIRECTIONS array
+        // adding expected neighbours that should b there based on co ord.
         expectedNeighbors.add(new Point(0, 1));
         expectedNeighbors.add(new Point(0, -1));
         expectedNeighbors.add(new Point(-1, 0));
@@ -70,6 +66,8 @@ public class HexBoardTests {
 
     @Test
     public void testPixelToHexCenter() {
+
+        //testing co ord
         Point hex = hexGridPanel.pixelToAxial(400, 400);
         assertEquals(0, hex.x);
         assertEquals(0, hex.y);

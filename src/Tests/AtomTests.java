@@ -31,14 +31,14 @@ public class AtomTests {
         assertNotNull(foundAtom);
         assertEquals(testPoint, foundAtom.getAtomAxialPosition());
 
-        //try find non-existing atom
+        //trying to find non existing atom
         Point nonExistingPoint = new Point(4, 4);
         assertNull(hexGridPanel.findAtomByAxial(hexGridPanel.atomsList,nonExistingPoint));
     }
     @Test
     void handleMouseTester() {
-        Point hexCoord = new Point(1, 1); //random hex place
-        Point clickedPoint = new Point(100, 100); // random place
+        Point hexCoord = new Point(1, 1);
+        Point clickedPoint = new Point(100, 100);
 
         game.handleMouseClick(hexCoord, clickedPoint); //clicks on atom to add it
 
@@ -54,7 +54,7 @@ public class AtomTests {
         Point hexCoord = new Point(2, 2);
         Point clickedPoint = new Point(200, 200);
 
-        game.handleMouseClick(hexCoord, clickedPoint);
+        game.handleMouseClick(hexCoord, clickedPoint); //simulates mouse click
 
         assertFalse(TwoPlayer.playerTwoGuesses.isEmpty(), "Atom should be added to " +
                 "playerTwoGuesses list");
@@ -69,7 +69,7 @@ public class AtomTests {
         //Point clickedPoint2 = new Point(500, 500);
 
 
-        game.handleMouseClick(hexCoord, clickedPoint);
+        game.handleMouseClick(hexCoord, clickedPoint); //simulates mouse click
 
         TwoPlayer.playerTwoGuesses.add(new Atom(hexCoord));
         TwoPlayer.playerTwoGuesses.add(new Atom(hexCoord2));

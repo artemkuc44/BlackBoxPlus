@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static src.Tests.ScoreTests.tester;
+
 public class MainMenu {
 
     public static final int DISPLAY_HEIGHT = 800;
@@ -178,13 +180,17 @@ public class MainMenu {
     }
 
     public static void restartTwoPlayerGame() {
-        frame.getContentPane().removeAll(); // Remove all content
+        if(tester != 0){ //if statement for unit test, causes null error if not created
+            frame.getContentPane().removeAll();
+            // Remove all content
 
-        TwoPlayer twoPlayerGame2 = new TwoPlayer(2);
-        frame.add(twoPlayerGame2, BorderLayout.CENTER); // Adds the new game panel
+            TwoPlayer twoPlayerGame2 = new TwoPlayer(2);
+            frame.add(twoPlayerGame2, BorderLayout.CENTER); // Adds the new game panel
 
-        frame.validate(); // Validates the frame after changes
-        frame.repaint(); // Repaints the frame to display the new content
+            frame.validate(); // Validates the frame after changes
+            frame.repaint(); // Repaints the frame to display the new content
+        }
+
     }
 
 

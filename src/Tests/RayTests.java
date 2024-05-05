@@ -17,9 +17,11 @@ public class RayTests {
     void setUp() {
         hexGridPanel = new HexBoard();
         hexGridPanel.setSize(800, 800);
-        ray = new Ray(new Point(0, 0), new Point(1, 0));// Initialize your TwoPlayer game// Ensure the panel has dimensions for coordinate calculations
+        ray = new Ray(new Point(0, 0), new Point(1, 0));
 
     }
+
+    //two tests below from the handbook pdf example
     @Test
     void testRayDeflection3(){
         //recreates diagram number 3 from Black Box+ Rules pdf.
@@ -95,7 +97,7 @@ public class RayTests {
 
 
     @Test
-    void ValidDirection() { //checks valid direction
+    void ValidDirection() { //checking if valid direction
         assertDoesNotThrow(() -> new Ray(new Point(5,0), new Point(0,1)));
         assertDoesNotThrow(() -> new Ray(new Point(5,2), new Point(1,1)));
         assertDoesNotThrow(() -> new Ray(new Point(1,7), new Point(1,0)));
@@ -120,6 +122,7 @@ public class RayTests {
 
     @Test
     void colorComponentsWithinRange() {
+        //checks colour for ray
         assertTrue(ray.getR() >= 0 && ray.getR() <= 255);
         assertTrue(ray.getG() >= 0 && ray.getG() <= 255);
         assertTrue(ray.getB() >= 0 && ray.getB() <= 255);
