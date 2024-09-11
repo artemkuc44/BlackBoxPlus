@@ -1,0 +1,23 @@
+Rules:
+On opening jar file you are located in the main menu.
+
+Game Modes:
+Sanbox:
+This mode is used for testing and getting used to game mechanics for new players, everything is visible and traceable easily.
+
+Two Player:
+decide on player one and two.
+
+Player one goes first - strategically click on the board to place 6 atoms, clcik finish button to hide.
+
+Now it is player 2s turn send rays by clicking inside of the border hexagons closest to whichever side to send a ray.
+
+depending on entry and exit ray markers guess where player 1 placed the atoms.
+
+ones 6 atoms have been guessed click "compare" button to compare and see how many were guessed correctly.
+
+click end game to either reaply or go back to main menu.
+
+Single player:
+
+Similar to two player but atoms are already hidden, all you have to do is guess where they are by sending rays, and placing atoms on the board.s
