@@ -1,7 +1,16 @@
-# Black Box Plus - Java Board Game
+# Project Description:
+-A 3 person **group project** for a **Software Engineering with Java module** in University. 
+
+-Completed over a 10 week period along with other courseowrk.
+
+-Please see **4 sprint submissions** and most importantly **Implementation and Testing** files which thoroughly documented project progress througout.
+
+-Project can be run using **jdk 21** + or by downloading the jar file located in **out/artifacts/** or **final_submission** folder directory.
+
+# Black Box Plus - Java Board Game Description
 
 Black Box Plus is an exciting extension of the classic strategy game, Black Box, offering a unique and more challenging gameplay experience on a hexagonal board. In this game of deduction, players take on the role of scientists attempting to uncover the hidden positions of atoms inside a mysterious hexagonal grid by firing rays and analyzing how they react. Using logical reasoning and strategy, players must deduce the correct positions of all the atoms while minimizing their moves.
-## How To Play
+## Repo Navigation:
 
 ## Game Modes:
 
@@ -61,7 +70,7 @@ The game’s JAR file is located in the **out/artifacts/ directory**. You can ru
 
 1. **Ensure you have Java installed**:
 
-   You need to have **Java JDK 8** or higher installed on your machine. You can check if Java is installed by running the following command in your terminal or command prompt:
+   You need to have **Java JDK 21** or higher installed on your machine. You can check if Java is installed by running the following command in your terminal or command prompt:
    ```
    java -version
 If Java is not installed, you can download it from Oracle's website or OpenJDK.
