@@ -10,7 +10,14 @@
 # Black Box Plus - Java Board Game Description
 
 Black Box Plus is an exciting extension of the classic strategy game, Black Box, offering a unique and more challenging gameplay experience on a hexagonal board. In this game of deduction, players take on the role of scientists attempting to uncover the hidden positions of atoms inside a mysterious hexagonal grid by firing rays and analyzing how they react. Using logical reasoning and strategy, players must deduce the correct positions of all the atoms while minimizing their moves.
-## Repo Navigation:
+## Repository Navigation:
+Repo is split into:
+
+-Sprint folders containing documentation.
+
+-out folder containing artifact (jar file for running).
+
+-src folder containing project code.
 
 ## Game Modes:
 
