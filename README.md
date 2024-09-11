@@ -57,7 +57,7 @@ The **Single Player Mode** is ideal for mastering the game on your own. The goal
 
 ### Launching from JAR File
 
-If you have a pre-built `.jar` file, you can easily run the game without needing to compile it yourself. Follow these steps:
+The game’s JAR file is located in the **out/artifacts/ directory**. You can run the game without needing to compile it yourself by downloading this file. Follow these steps:
 
 1. **Ensure you have Java installed**:
 
