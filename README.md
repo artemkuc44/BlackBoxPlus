@@ -10,6 +10,17 @@
 # Black Box Plus - Java Board Game Description
 
 Black Box Plus is an exciting extension of the classic strategy game, Black Box, offering a unique and more challenging gameplay experience on a hexagonal board. In this game of deduction, players take on the role of scientists attempting to uncover the hidden positions of atoms inside a mysterious hexagonal grid by firing rays and analyzing how they react. Using logical reasoning and strategy, players must deduce the correct positions of all the atoms while minimizing their moves.
+
+## Reports – Implementation & Testing
+
+The following reports document the thought process, implementations, bug fixes, and overall progress throughout the project.  
+
+- [Sprint 1 – Implementation & Testing](42_FORTYTWO_sprint1/Black_Box_implementation_Testing.pdf)  
+- [Sprint 2 – Implementation & Testing](42_FORTYTWO_sprint2/Sprint_2_Implementation_and_Testing.pdf)  
+- [Sprint 3 – Implementation & Testing](42_FORTYTWO_sprint3/sprint_3_implementation_and_testing.pdf)  
+- [Sprint 4 – Implementation & Testing (includes walkthrough)](42_FORTYTWO_sprint4/Implementation%20and%20Testing.pdf)  
+- [Rules + How to Launch (also seen below)](42_FORTYTWO_final_submission/Rules_How_To_Launch.pdf)
+
 ## Repository Navigation:
 Repo is split into:
 
